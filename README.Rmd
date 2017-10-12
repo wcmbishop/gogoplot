@@ -32,7 +32,7 @@ The current version of `gogoplot` has just one function - `plot_gadget()`. When 
 library(gogoplot)
 plot_gadget(mtcars)
 ```
-![gogoplot GUI](images/gogoplot.png)
+<img src="images/gogoplot.png" alt="gogoplot GUI" width="600" />
 
 ## Contribute
 This is the very beginning of this package, and I would love help and feedback in developing it. The core concept is to provide simple GUIs for common R activities, which can then return the generated code as a result. As mentioned above, this seems useful both as a learning tool and a way to generate reproducible code. I'd ideally like to build these GoGo gadgets for some of the most valuable and frequently used [`tidyverse`](https://www.tidyverse.org) tools/workflows below. I'm starting with `ggplot2` because it's what got me into R. 

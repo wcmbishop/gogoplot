@@ -26,7 +26,7 @@ library(gogoplot)
 plot_gadget(mtcars)
 ```
 
-![gogoplot GUI](images/gogoplot.png)
+<img src="images/gogoplot.png" alt="gogoplot GUI" width="600" />
 
 Contribute
 ----------
