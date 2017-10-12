@@ -13,7 +13,7 @@ Install
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("wcmbishop/gogoplot")
+devtools::install_github("wcmbishop/gogoplot", force = TRUE)
 ```
 
 Example
