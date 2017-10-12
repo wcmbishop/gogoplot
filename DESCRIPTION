@@ -1,0 +1,16 @@
+Package: gogoplot
+Type: Package
+Title: Interactive ggplot2 gadgets
+Version: 0.1.0
+Authors@R: person("Will", "Bishop", email = "wbishop@tesla.com", 
+  role = c("cre", "aut"))
+Description: Simple HTML gadgets for interactively building data visualziations
+    with ggplot. You can then return the plot or the code that built it.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+  R (>= 3.3.1),
+  ggplot2 (>= 2.2.1),
+  shiny (>= 1.0.3)
+RoxygenNote: 6.0.1
