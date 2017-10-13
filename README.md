@@ -9,11 +9,11 @@ This package is a work in progress. I would love help improving it! Check out th
 Install
 -------
 
-`gogoplot` is only available on github. You can install it from here with the code below, using the `devtools` package.
+`gogoplot` is not yet on our internal [Tesla CRAN](https://cran.teslamotors.com) server. You can install the development version from BitBucket with the code below, using the `devtools` package.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("wcmbishop/gogoplot")
+devtools::install_git('https://stash.teslamotors.com/scm/fsm/gogoplot.git')
 ```
 
 Example
