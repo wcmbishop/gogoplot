@@ -23,7 +23,7 @@ The current version of `gogoplot` has just one function - `plot_gadget()`. When 
 
 ``` r
 library(gogoplot)
-plot_gadget(mtcars)
+gogoplot(mtcars)
 ```
 
 ![gogoplot GUI](images/gogoplot.png)
