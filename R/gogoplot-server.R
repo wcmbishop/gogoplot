@@ -118,7 +118,7 @@ gogoplot_server <- function(.data, data_name) {
 
     # return plot object
     shiny::observeEvent(input$btn_plot, {
-      shiny::stopApp(invisible(plot()))
+      shiny::stopApp(plot())
     })
 
     # download plot image
