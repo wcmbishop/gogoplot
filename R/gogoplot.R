@@ -1,7 +1,7 @@
 # gogoplot.R
 
 #' @title Interactively build a plot.
-#' @description Launch an interactive HTML gadget that lets you
+#' @description Launch an interactive shiny gadget that lets you
 #' build a \pkg{ggplot2} plot from the given data.
 #'
 #' @param .data  a data-frame to visualize

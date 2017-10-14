@@ -1,3 +1,5 @@
+#' Add a plot layer and capture plot code
+#'
 #' \code{%++%} is the key to constructing "code tracked" plot objects.
 #' It adds a new plotting layer to an existing plot (the traditional
 #' goal of the \pkg{ggplot2} \code{+} method), and it also captures the
@@ -10,7 +12,7 @@
 #' @return an updated plot object
 #' @export
 #'
-`%++%` = function(e1, e2) {
+`%++%` <- function(e1, e2) {
   quo_layer <- rlang::enquo(e2)
   p <- e1 + rlang::eval_tidy(quo_layer)
   # add code string to "gogoplot" attribute

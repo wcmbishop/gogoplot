@@ -1,7 +1,8 @@
 Package: gogoplot
 Type: Package
 Title: Interactive ggplot2 gadgets
-Version: 0.1.0.9999
+Version: 0.1.1
+Date: 2017-10-13
 Authors@R: person("Will", "Bishop", email = "wbishop@tesla.com", 
   role = c("cre", "aut"))
 Description: Simple HTML gadgets for interactively building data visualziations
