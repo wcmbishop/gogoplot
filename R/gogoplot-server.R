@@ -102,18 +102,23 @@ gogoplot_server <- function(.data, data_name) {
     # return plot code
     shiny::observeEvent(input$btn_code, {
       code_str <- paste0(plot_code(), collapse = " +\n  ")
+
       # return function call
       if(rstudioapi::isAvailable()){
         rstudioapi::insertText(text = code_str)
-        shiny::stopApp()
-      } else{
-        shiny::stopApp(code_str)
       }
-    })
+
+      # In addition to inserting text into an open document using the
+      # RStudio API, the application will always invisibly return
+      # the code string so it can be captured
+
+      shiny::stopApp(invisible(code_str))
+
+      })
 
     # return plot object
     shiny::observeEvent(input$btn_plot, {
-      shiny::stopApp(plot())
+      shiny::stopApp(invisible(plot()))
     })
 
     # download plot image
