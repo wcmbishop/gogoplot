@@ -1,7 +1,7 @@
 Package: gogoplot
 Type: Package
 Title: Interactive ggplot2 gadgets
-Version: 0.1.0
+Version: 0.1.0.9999
 Authors@R: person("Will", "Bishop", email = "wbishop@tesla.com", 
   role = c("cre", "aut"))
 Description: Simple HTML gadgets for interactively building data visualziations
@@ -14,6 +14,7 @@ Depends:
 Imports:
   ggplot2 (>= 2.2.1),
   miniUI (>= 0.1.1),
+  rlang (>= 0.1.2),
   rstudioapi (>= 0.6.0),
   shiny (>= 1.0.5)
 RoxygenNote: 6.0.1
