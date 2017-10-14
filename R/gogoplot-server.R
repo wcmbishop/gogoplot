@@ -34,6 +34,14 @@ gogoplot_server <- function(.data, data_name) {
       selectInput("facet_col", "facet cols:",
                   choices = c('none', names(.data)), selected='choose...')
     })
+    output$size_set <- shiny::renderUI({
+      sliderInput("size_set", "size setting:",
+                  min = 1, max = 5, value = 2, step = 0.5)
+    })
+    output$size_map <- shiny::renderUI({
+      selectInput("size_map", "size mapping:",
+                  choices = c('none', names(.data)), selected='choose...')
+    })
 
     # Render the plot
     output$plot_display <- shiny::renderPlot({
@@ -60,15 +68,39 @@ gogoplot_server <- function(.data, data_name) {
 
       # geom_point
       if (input$color == 'none') {
-        p <- p %++% geom_point(alpha = rlang::UQ(input$alpha))
+        if (input$size_type == "set") {
+          p <- p %++% geom_point(size = rlang::UQ(input$size_set),
+                                 alpha = rlang::UQ(input$alpha))
+        } else {
+          if (input$size_map == "none") {
+            quo_size_map <- quo(NULL)
+          } else {
+            quo_size_map <- quo(!!sym(input$size_map))
+          }
+          p <- p %++% geom_point(aes(size = rlang::UQE(quo_size_map)),
+                                 alpha = rlang::UQ(input$alpha))
+        }
       } else {
         if (input$color_scale == "discrete") {
           quo_color <- quo(as.factor(!!sym(input$color)))
         } else {
           quo_color <- quo(!!sym(input$color))
         }
-        p <- p %++% geom_point(aes(color = rlang::UQE(quo_color)),
-                               alpha = rlang::UQ(input$alpha))
+
+        if (input$size_type == "set") {
+          p <- p %++% geom_point(aes(color = rlang::UQE(quo_color)),
+                                 size = rlang::UQ(input$size_set),
+                                 alpha = rlang::UQ(input$alpha))
+        } else {
+          if (input$size_map == "none") {
+            quo_size_map <- quo(NULL)
+          } else {
+            quo_size_map <- quo(!!sym(input$size_map))
+          }
+          p <- p %++% geom_point(aes(color = rlang::UQE(quo_color),
+                                     size = rlang::UQE(quo_size_map)),
+                                 alpha = rlang::UQ(input$alpha))
+        }
       }
 
       # guides
@@ -111,14 +143,16 @@ gogoplot_server <- function(.data, data_name) {
         updateCheckboxInput(session, 'auto_plot', label = 'auto-update (*)')
       }
     })
-    shiny::observeEvent(input$btn_update, {
-      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
-    })
 
     # buttons
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    # return Code
+    # update plot
+    shiny::observeEvent(input$btn_update, {
+      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
+    })
+
+    # return plot code
     shiny::observeEvent(input$btn_code, {
       code_str <- paste0(plot_code(), collapse = " +\n  ")
       # return function call
@@ -130,7 +164,7 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
-    # return Plot object
+    # return plot object
     shiny::observeEvent(input$btn_plot, {
       shiny::stopApp(plot())
     })

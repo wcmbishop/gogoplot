@@ -40,7 +40,20 @@ scatterTabPanel <- miniUI::miniTabPanel(
           shiny::conditionalPanel(
             "input.config == 'scales'",
             shiny::helpText(shiny::strong('SCALES')),
-            shiny::helpText('functionality coming...')
+            shiny::radioButtons(
+              'size_type',
+              NULL,
+              choices = c('set', 'map'),
+              selected = 'set'
+            ),
+            shiny::conditionalPanel(
+              "input.size_type == 'set'",
+              shiny::uiOutput("size_set")
+            ),
+            shiny::conditionalPanel(
+              "input.size_type == 'map'",
+              shiny::uiOutput("size_map")
+            )
           ),
           shiny::conditionalPanel(
             "input.config == 'facets'",
