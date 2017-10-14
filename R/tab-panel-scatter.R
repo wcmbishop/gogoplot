@@ -12,11 +12,10 @@ scatterTabPanel <- miniUI::miniTabPanel(
         shiny::fillCol(
           flex = c(NA),
           shiny::radioButtons(
-            'config',
-            label = 'Configure...',
-            choices = c('fields', 'color',
-                        'facets', 'scales'),
-            selected = 'fields'
+            "config",
+            label = "Configure...",
+            choices = c("fields", "color", "size", "facets", "scales"),
+            selected = "fields"
           ),
           shiny::conditionalPanel(
             "input.config == 'fields'",
@@ -38,22 +37,18 @@ scatterTabPanel <- miniUI::miniTabPanel(
             shiny::uiOutput("alpha")
           ),
           shiny::conditionalPanel(
-            "input.config == 'scales'",
-            shiny::helpText(shiny::strong('SCALES')),
+            "input.config == 'size'",
+            shiny::helpText(shiny::strong('SIZE')),
             shiny::radioButtons(
               'size_type',
               NULL,
               choices = c('set', 'map'),
               selected = 'set'
             ),
-            shiny::conditionalPanel(
-              "input.size_type == 'set'",
-              shiny::uiOutput("size_set")
-            ),
-            shiny::conditionalPanel(
-              "input.size_type == 'map'",
-              shiny::uiOutput("size_map")
-            )
+            shiny::conditionalPanel("input.size_type == 'set'",
+                                    shiny::uiOutput("size_set")),
+            shiny::conditionalPanel("input.size_type == 'map'",
+                                    shiny::uiOutput("size_map"))
           ),
           shiny::conditionalPanel(
             "input.config == 'facets'",
@@ -62,7 +57,13 @@ scatterTabPanel <- miniUI::miniTabPanel(
             shiny::uiOutput("facet_col"),
             shiny::checkboxInput('facet_label', 'show field label',
                                  value = TRUE)
-          )),
+            ),
+          shiny::conditionalPanel(
+            "input.config == 'scales'",
+            shiny::helpText(shiny::strong('SCALES')),
+            shiny::helpText("coming soon.")
+            )
+          ),
         shiny::fillCol(
           flex = c(NA),
           shiny::checkboxInput('auto_plot', 'auto-update',

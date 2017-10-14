@@ -10,17 +10,18 @@ gogoplot_server <- function(.data, data_name) {
 
     # dynamic UI input elements
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    choices <- select_choices(.data)
     output$xvar <- shiny::renderUI({
       selectInput("xvar", "x variable:",
-                  choices = c('choose...', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
     output$yvar <- shiny::renderUI({
       selectInput("yvar", "y variable:",
-                  choices = c('choose...', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
     output$color <- shiny::renderUI({
       selectInput("color", NULL,
-                  choices = c('none', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
     output$alpha <- shiny::renderUI({
       sliderInput("alpha", "alpha",
@@ -28,11 +29,11 @@ gogoplot_server <- function(.data, data_name) {
     })
     output$facet_row <- shiny::renderUI({
       selectInput("facet_row", "facet rows:",
-                  choices = c('none', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
     output$facet_col <- shiny::renderUI({
       selectInput("facet_col", "facet cols:",
-                  choices = c('none', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
     output$size_set <- shiny::renderUI({
       sliderInput("size_set", "size setting:",
@@ -40,7 +41,7 @@ gogoplot_server <- function(.data, data_name) {
     })
     output$size_map <- shiny::renderUI({
       selectInput("size_map", "size mapping:",
-                  choices = c('none', names(.data)), selected='choose...')
+                  choices = choices, selected = CONST_NONE)
     })
 
     # Render the plot
@@ -58,71 +59,17 @@ gogoplot_server <- function(.data, data_name) {
       validate(
         need(input$xvar, 'Select an x variable.'),
         need(input$yvar, 'Select a y variable.'),
-        need(input$xvar != 'choose...', 'Select an x variable.'),
-        need(input$yvar != 'choose...', 'Select a y variable.')
+        need(input$xvar != CONST_NONE, 'Select an x variable.'),
+        need(input$yvar != CONST_NONE, 'Select a y variable.')
       )
 
       # empty plot object
       p <- new_gogoplot(ggplot(!!sym(data_name),
                                aes(!!sym(input$xvar), !!sym(input$yvar))))
-
-      # geom_point
-      if (input$color == 'none') {
-        if (input$size_type == "set") {
-          p <- p %++% geom_point(size = rlang::UQ(input$size_set),
-                                 alpha = rlang::UQ(input$alpha))
-        } else {
-          if (input$size_map == "none") {
-            quo_size_map <- quo(NULL)
-          } else {
-            quo_size_map <- quo(!!sym(input$size_map))
-          }
-          p <- p %++% geom_point(aes(size = rlang::UQE(quo_size_map)),
-                                 alpha = rlang::UQ(input$alpha))
-        }
-      } else {
-        if (input$color_scale == "discrete") {
-          quo_color <- quo(as.factor(!!sym(input$color)))
-        } else {
-          quo_color <- quo(!!sym(input$color))
-        }
-
-        if (input$size_type == "set") {
-          p <- p %++% geom_point(aes(color = rlang::UQE(quo_color)),
-                                 size = rlang::UQ(input$size_set),
-                                 alpha = rlang::UQ(input$alpha))
-        } else {
-          if (input$size_map == "none") {
-            quo_size_map <- quo(NULL)
-          } else {
-            quo_size_map <- quo(!!sym(input$size_map))
-          }
-          p <- p %++% geom_point(aes(color = rlang::UQE(quo_color),
-                                     size = rlang::UQE(quo_size_map)),
-                                 alpha = rlang::UQ(input$alpha))
-        }
-      }
-
-      # guides
-      if (input$legend == FALSE) {
-        p <- p %++% guides(color = 'none')
-      } else {
-        p <- p %++% labs(color = rlang::UQ(input$color))
-      }
-
-      # facets
-      if (any(c(input$facet_row, input$facet_col) != "none")) {
-        if (input$facet_label == TRUE) {
-          quo_facet_labeller <- quo(ggplot2::label_both)
-        } else {
-          quo_facet_labeller <- quo(ggplot2::label_value)
-        }
-        facet_row <- ifelse(input$facet_row == "none", ".", input$facet_row)
-        facet_col <- ifelse(input$facet_col == "none", ".", input$facet_col)
-        p <- p %++% facet_grid(!!sym(facet_row) ~ !!sym(facet_col),
-                               labeller = rlang::UQE(quo_facet_labeller))
-      }
-
+      p <- add_geom_point(p, input)
+      p <- add_guides(p, input)
+      p <- add_labs(p, input)
+      p <- add_facet_grid(p, input)
       p
     })
 

@@ -2,9 +2,9 @@
 library(rlang)
 library(ggplot2)
 
-gogoplot(mtcars)
+gogoplot(mtcars, TRUE)
 
-
+gogoplot(diamonds, TRUE)
 
 input <- list(
   xvar = "disp",
