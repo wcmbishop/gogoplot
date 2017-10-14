@@ -9,7 +9,7 @@ This package is a work in progress. I would love help improving it! Check out th
 Install
 -------
 
-`gogoplot` is only available on github. You can install it from here with the code below, using the `devtools` package.
+`gogoplot` is only currently only available on github, as a development version. You can install this with the code below, using the `devtools` package.
 
 ``` r
 # install.packages("devtools")
@@ -37,6 +37,6 @@ This is the very beginning of this package, and I would love help and feedback i
 -   data manipulation with [`dplyr`](http://dplyr.tidyverse.org)
 -   data tidying with [`tidyr`](http://tidyr.tidyverse.org)
 
-The core piece to making these gadgets robust and scalable is to implement the programmatic code generation well. Currently I am doing this in a terribly hacky way: I simply write the code twice. For example, when the user selects a column to use as a horizontal facet, I add a `facet_grid` geom layer to the plotting object and separately I add the same code as a string to a "code\_vec" object. This method is prone to error and won't scale well. Ideally we'd have a robust way to add a plotting layer to both the plotting object AND the code vector in one call. Seems like a good use-case for some functional programming (and [quasiquotation](http://dplyr.tidyverse.org/articles/programming.html#quasiquotation)?).
+The core piece to making these gadgets robust and scalable is to implement the programmatic code generation well. This has recently been improved to capture both plot updates and plot code in one step, with a new `%++%` operator. This function adds a plot layer and captures the code in an object attribute (as a character vector). This relies heavily on the amazing [rlang](http://rlang.tidyverse.org) package and [quasiquotation](http://dplyr.tidyverse.org/articles/programming.html#quasiquotation) under the hood.
 
-If you would like to help on this core code/object accumulation method, please post a new github issue or send me a pull-request.
+If you would like to help, please post a new github issue or send me a pull-request.

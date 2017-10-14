@@ -1,0 +1,3 @@
+
+CONST_NONE <- "none"
+
