@@ -24,16 +24,20 @@ add_geom_point <- function(p, input) {
   }
 
   # ALPHA
-  setting <- append_exprs(setting, alpha = !!input$alpha)
+  setting <- append_exprs(setting, alpha = !!as.numeric(input$alpha))
 
   # SIZE
   if (input$size_type == "set") {
-    setting <- append_exprs(setting, size = !!input$size_set)
+    setting <- append_exprs(setting, size = !!as.numeric(input$size_set))
   } else if (input$size_map != CONST_NONE) {
     mapping <- append_exprs(mapping, size = !!sym(input$size_map))
   }
 
   # compile expressions into layer
-  p <- p %++% geom_point(aes(!!!mapping), !!!setting)
+  if (length(mapping) > 0) {
+    p <- p %++% geom_point(aes(!!!mapping), !!!setting)
+  } else {
+    p <- p %++% geom_point(!!!setting)
+  }
   p
 }

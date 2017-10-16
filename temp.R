@@ -2,7 +2,8 @@
 library(rlang)
 library(ggplot2)
 
-gogoplot(mtcars, TRUE)
+gogoplot(mtcars, FALSE)
+
 
 gogoplot(diamonds, TRUE)
 
