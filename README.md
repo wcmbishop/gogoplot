@@ -6,27 +6,30 @@ gogoplot
 
 This package is a work in progress. I would love help improving it! Check out the "*Contribute*" section if you're interested.
 
+<br>
+
 Install
 -------
 
-`gogoplot` is only currently only available on github, as a development version. You can install this with the code below, using the `devtools` package.
+You can install `gogoplot` by running the command below in R. To permanently add the Tesla CRAN repository to your computer, follow instructions [here](https://cran.teslamotors.com/).
 
-``` r
-# install.packages("devtools")
-devtools::install_github("wcmbishop/gogoplot", force = TRUE)
-```
+    install.packages("gogoplot", repos = c("https://cran.teslamotors.com", "https://cran.rstudio.com"))
+
+<br>
 
 Example
 -------
 
-The current version of `gogoplot` has just one function - `plot_gadget()`. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can get to plotting! At the end, return the plot you made or the code needed to make it yourself.
+The current version of `gogoplot` has just one function - `gogoplot()`. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can get to plotting! At the end, return the plot you made or the code needed to make it yourself.
 
 ``` r
 library(gogoplot)
-plot_gadget(mtcars)
+gogoplot(mtcars)
 ```
 
-![gogoplot GUI](images/gogoplot.png)
+<img src="images/gogoplot.png" width="600px" />
+
+<br>
 
 Contribute
 ----------
