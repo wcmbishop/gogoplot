@@ -15,7 +15,10 @@ input <- list(
   legend = TRUE,
   facet_row = "none",
   facet_col = "none",
-  facet_label = TRUE
+  facet_label = TRUE,
+  size_type = "set",
+  size_set = 3,
+  size_map = "none"
 )
 
 p <- new_gogoplot(ggplot(mtcars, aes(!!sym(input$xvar), !!sym(input$yvar))))
@@ -68,6 +71,36 @@ geom_maybe_vline <- if (draw_ref_line) geom_vline else geom_ignore
 geom_ignore <- function(...) {
   NULL
 }
+
+
+if (input$color_scale == "discrete") {
+  quo_color <- quo(as.factor(!!sym(input$color)))
+} else {
+  quo_color <- quo(!!sym(input$color))
+}
+p2 <- p %++% geom_point(aes(color = UQE(quo_color)),
+                  size = !!input$size_set,
+                  alpha = !!input$alpha)
+attr(p2, "gogoplot")
+
+
+mapping_quos <- quos()
+
+mapping <- exprs(color = UQE(quo_color))
+setting <- exprs(size = !!input$size_set,
+                 alpha = !!input$alpha)
+
+setting <- exprs(size = !!input$size_set)
+setting <- exprs(!!!setting, alpha = !!input$alpha)
+# setting <- exprs()
+
+quo(geom_point(aes(!!!mapping), !!!setting))
+
+p <- new_gogoplot(ggplot(mtcars, aes(!!sym(input$xvar), !!sym(input$yvar))))
+add_geom_point(p, input)
+
+args <- list(x = 1:3, y = ~var)
+UQS(quos(!!! args, z = 10L))
 
 
 

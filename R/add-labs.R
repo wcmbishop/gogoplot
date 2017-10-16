@@ -4,6 +4,6 @@ add_labs <- function(p, input) {
   if (!all(req_inputs %in% names(input)))
     stop("some required input fields are missing")
 
-  p <- p %++% labs(color = rlang::UQ(input$color))
+  p <- p %++% labs(color = !!(input$color))
   p
 }
