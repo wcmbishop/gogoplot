@@ -27,11 +27,7 @@ The current version of `gogoplot` has just one function - `gogoplot()`. When you
 library(gogoplot)
 gogoplot(mtcars)
 ```
-
-```{r, out.width = "600px", eval=TRUE, echo=FALSE}
-knitr::include_graphics("images/gogoplot.png")
-# ![gogoplot GUI](images/gogoplot.png)
-```
+![](images/gogoplot.png)
 
 <br>
 

@@ -27,7 +27,7 @@ library(gogoplot)
 gogoplot(mtcars)
 ```
 
-<img src="images/gogoplot.png" width="600px" />
+![](images/gogoplot.png)
 
 <br>
 
