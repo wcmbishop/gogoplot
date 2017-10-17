@@ -8,8 +8,7 @@ gogoplot_server <- function(.data, data_name) {
 
   function(input, output, session) {
 
-    # dynamic UI input elements
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ---- render UI ----
     var_choices <- select_choices(.data)
     output$plot_type <- shiny::renderUI({
       selectInput("plot_type", "PLOT TYPE:",
@@ -48,7 +47,7 @@ gogoplot_server <- function(.data, data_name) {
                   choices = var_choices, selected = CONST_NONE)
     })
 
-    # Render the plot
+    # ---- plot_display ----
     output$plot_display <- shiny::renderPlot({
       if (input$auto_plot == TRUE) {
         plot <- plot()
@@ -59,6 +58,7 @@ gogoplot_server <- function(.data, data_name) {
       plot
     })
 
+    # ---- plot ----
     plot <- shiny::reactive({
       validate(need(input$plot_type, "  Select a plot type"))
       if (input$plot_type == "scatter") {
@@ -95,10 +95,12 @@ gogoplot_server <- function(.data, data_name) {
       p
     })
 
+    # ---- plot_code ----
     plot_code <- shiny::reactive({
       attr(plot(), "gogoplot")
     })
 
+    # ---- render_code ----
     output$render_code <- shiny::renderText({
       code <- paste0(
         "<code>",
@@ -108,10 +110,16 @@ gogoplot_server <- function(.data, data_name) {
       code
     })
 
+    # ---- data_table ----
     output$data_table <- shiny::renderDataTable({
       .data
     }, options = list(pageLength = 5))
 
+
+    # ---- update button ----
+    shiny::observeEvent(input$btn_update, {
+      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
+    })
     # indicate if plot is stale
     shiny::observeEvent(plot(), {
       if (input$auto_plot == T) {
@@ -121,6 +129,8 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
+
+    # ---- done button ----
     shiny::observeEvent(input$done, {
       code_str <- paste0(plot_code(), collapse = " +\n  ")
       # print(plot())
@@ -133,39 +143,6 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
-    # buttons
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    # update plot
-    shiny::observeEvent(input$btn_update, {
-      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
-    })
-
-    # # return plot code
-    # shiny::observeEvent(input$btn_code, {
-    #   code_str <- paste0(plot_code(), collapse = " +\n  ")
-    #   print(plot())
-    #   if (rstudioapi::isAvailable()) {
-    #     rstudioapi::insertText(text = code_str)
-    #     shiny::stopApp(invisible(code_str))
-    #   } else{
-    #     shiny::stopApp(invisible(code_str))
-    #   }
-    # })
-    #
-    # # return plot object
-    # shiny::observeEvent(input$btn_plot, {
-    #   shiny::stopApp(plot())
-    # })
-    #
-    # # download plot image
-    # output$btn_save <- downloadHandler(
-    #   filename = function() {
-    #     paste0(Sys.Date(), '-plot.png')
-    #   },
-    #   content = function(con) {
-    #     ggsave(con, plot(), device = 'png')
-    #   }
-    # )
   }
 }
