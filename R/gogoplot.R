@@ -46,4 +46,3 @@ gogoplot <- function(.data, popup = FALSE) {
                    server = server,
                    viewer = viewer)
 }
-

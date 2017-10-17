@@ -11,7 +11,7 @@ gogoplot_server <- function(.data, data_name) {
     # ---- render UI ----
     var_choices <- select_choices(.data)
     output$plot_type <- shiny::renderUI({
-      selectInput("plot_type", "PLOT TYPE:",
+      selectInput("plot_type", "Plot Type:",
                   choices = c("scatter", "histogram"), selected = "scatter")
     })
     output$xvar <- shiny::renderUI({
@@ -114,7 +114,12 @@ gogoplot_server <- function(.data, data_name) {
     output$data_table <- shiny::renderDataTable({
       .data
     }, options = list(pageLength = 5))
-
+    output$data_table_header <- shiny::renderText({
+      header <- shiny::tags$h3(sprintf("%s: %i x %i", data_name,
+                                       nrow(.data), ncol(.data)))
+      header <- paste(header)
+      header
+    })
 
     # ---- update button ----
     shiny::observeEvent(input$btn_update, {
