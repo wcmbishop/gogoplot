@@ -134,7 +134,6 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
-
     # ---- done button ----
     shiny::observeEvent(input$done, {
       code_str <- paste0(plot_code(), collapse = " +\n  ")
@@ -148,6 +147,10 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
+    # ---- cancel button ----
+    shiny::observeEvent(input$cancel, {
+      shiny::stopApp()
+    })
 
   }
 }

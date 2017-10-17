@@ -41,5 +41,6 @@ gogoplot <- function(.data, popup = FALSE) {
   }
   shiny::runGadget(app = ui,
                    server = server,
-                   viewer = viewer)
+                   viewer = viewer,
+                   stopOnCancel = FALSE)
 }
