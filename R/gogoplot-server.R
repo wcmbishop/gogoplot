@@ -10,30 +10,34 @@ gogoplot_server <- function(.data, data_name) {
 
     # dynamic UI input elements
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    choices <- select_choices(.data)
+    var_choices <- select_choices(.data)
+    output$plot_type <- shiny::renderUI({
+      selectInput("plot_type", "PLOT TYPE:",
+                  choices = c("scatter", "histogram"), selected = "scatter")
+    })
     output$xvar <- shiny::renderUI({
       selectInput("xvar", "x variable:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$yvar <- shiny::renderUI({
       selectInput("yvar", "y variable:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$color <- shiny::renderUI({
       selectInput("color", NULL,
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$alpha <- shiny::renderUI({
-      sliderInput("alpha", "alpha",
+      sliderInput("alpha", "alpha:",
                   min = 0, max = 1, value = 1, step = 0.1)
     })
     output$facet_row <- shiny::renderUI({
       selectInput("facet_row", "facet rows:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$facet_col <- shiny::renderUI({
       selectInput("facet_col", "facet cols:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$size_set <- shiny::renderUI({
       sliderInput("size_set", "size setting:",
@@ -41,7 +45,7 @@ gogoplot_server <- function(.data, data_name) {
     })
     output$size_map <- shiny::renderUI({
       selectInput("size_map", "size mapping:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
 
     # Render the plot
@@ -56,26 +60,52 @@ gogoplot_server <- function(.data, data_name) {
     })
 
     plot <- shiny::reactive({
-      validate(
-        need(input$xvar, 'Select an x variable.'),
-        need(input$yvar, 'Select a y variable.'),
-        need(input$xvar != CONST_NONE, 'Select an x variable.'),
-        need(input$yvar != CONST_NONE, 'Select a y variable.')
-      )
+      validate(need(input$plot_type, "  Select a plot type"))
+      if (input$plot_type == "scatter") {
+        validate(
+          need(input$xvar, "  Select an x variable."),
+          need(input$yvar, "  Select a y variable."),
+          need(input$xvar != CONST_NONE, "  Select an x variable."),
+          need(input$yvar != CONST_NONE, "  Select a y variable.")
+        )
+      } else if (input$plot_type == "histogram") {
+        validate(
+          need(input$xvar, "  Select an x variable."),
+          need(input$xvar != CONST_NONE, "  Select an x variable.")
+        )
+      }
 
-      # empty plot object
-      p <- new_gogoplot(ggplot(!!sym(data_name),
-                               aes(!!sym(input$xvar), !!sym(input$yvar))))
-      p <- add_geom_point(p, input)
-      p <- add_guides(p, input)
-      p <- add_labs(p, input)
-      p <- add_facet_grid(p, input)
+      # build plot
+      if (input$plot_type == "scatter") {
+        p <- new_gogoplot(
+          ggplot(!!sym(data_name), aes(!!sym(input$xvar), !!sym(input$yvar)))
+          ) %>%
+          add_geom_point(input)
+      } else if (input$plot_type == "histogram") {
+        p <- new_gogoplot(
+          ggplot(!!sym(data_name), aes(!!sym(input$xvar)))
+          ) %>%
+          add_geom_histogram(input)
+      }
+      p <- p %>%
+        add_facet_grid(input) %>%
+        add_guides(input) %>%
+        add_labs(input) %>%
+        add_theme(input)
       p
     })
 
-    # ---- plot_code ----
     plot_code <- shiny::reactive({
       attr(plot(), "gogoplot")
+    })
+
+    output$render_code <- shiny::renderText({
+      code <- paste0(
+        "<code>",
+        paste0(plot_code(), collapse = " +<br>&nbsp;&nbsp;&nbsp;&nbsp;"),
+        "</code>"
+        )
+      code
     })
 
     output$data_table <- shiny::renderDataTable({
@@ -91,6 +121,18 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
+    shiny::observeEvent(input$done, {
+      code_str <- paste0(plot_code(), collapse = " +\n  ")
+      # print(plot())
+      if (rstudioapi::isAvailable()) {
+        rstudioapi::insertText(text = code_str)
+        shiny::stopApp(invisible(code_str))
+      } else{
+        message(cat(cod_str))
+        shiny::stopApp(invisible(code_str))
+      }
+    })
+
     # buttons
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -99,31 +141,31 @@ gogoplot_server <- function(.data, data_name) {
       updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
     })
 
-    # return plot code
-    shiny::observeEvent(input$btn_code, {
-      code_str <- paste0(plot_code(), collapse = " +\n  ")
-      # return function call
-      if(rstudioapi::isAvailable()){
-        rstudioapi::insertText(text = code_str)
-        shiny::stopApp()
-      } else{
-        shiny::stopApp(code_str)
-      }
-    })
-
-    # return plot object
-    shiny::observeEvent(input$btn_plot, {
-      shiny::stopApp(plot())
-    })
-
-    # download plot image
-    output$btn_save <- downloadHandler(
-      filename = function() {
-        paste0(Sys.Date(), '-plot.png')
-      },
-      content = function(con) {
-        ggsave(con, output$plot, device = 'png')
-      }
-    )
+    # # return plot code
+    # shiny::observeEvent(input$btn_code, {
+    #   code_str <- paste0(plot_code(), collapse = " +\n  ")
+    #   print(plot())
+    #   if (rstudioapi::isAvailable()) {
+    #     rstudioapi::insertText(text = code_str)
+    #     shiny::stopApp(invisible(code_str))
+    #   } else{
+    #     shiny::stopApp(invisible(code_str))
+    #   }
+    # })
+    #
+    # # return plot object
+    # shiny::observeEvent(input$btn_plot, {
+    #   shiny::stopApp(plot())
+    # })
+    #
+    # # download plot image
+    # output$btn_save <- downloadHandler(
+    #   filename = function() {
+    #     paste0(Sys.Date(), '-plot.png')
+    #   },
+    #   content = function(con) {
+    #     ggsave(con, plot(), device = 'png')
+    #   }
+    # )
   }
 }

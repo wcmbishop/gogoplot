@@ -1,7 +1,7 @@
 
-scatterTabPanel <- miniUI::miniTabPanel(
-  'scatter',
-  icon = shiny::icon('ellipsis-h'),
+plotTabPanel <- miniUI::miniTabPanel(
+  "plot",
+  icon = shiny::icon("bar-chart"),
   miniUI::miniContentPanel(
     padding = 10,
     shiny::fillRow(
@@ -11,6 +11,7 @@ scatterTabPanel <- miniUI::miniTabPanel(
         width = 120,
         shiny::fillCol(
           flex = c(NA),
+          shiny::uiOutput("plot_type"),
           shiny::radioButtons(
             "config",
             label = "Configure...",
@@ -67,11 +68,13 @@ scatterTabPanel <- miniUI::miniTabPanel(
         shiny::fillCol(
           flex = c(NA),
           shiny::checkboxInput('auto_plot', 'auto-update',
-                               value = TRUE))),
+                               value = TRUE),
+          shiny::actionButton('btn_update', 'update plot'))
+        ),
       miniUI::miniContentPanel(
         padding = 0,
         shiny::plotOutput("plot_display", height = "100%")
+        )
       )
     )
   )
-)

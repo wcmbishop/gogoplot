@@ -17,14 +17,15 @@ add_geom_point <- function(p, input) {
 
   # COLOR
   if (input$color != CONST_NONE) {
-    if_else_expr(input$color_scale == "discrete",
-                 rlang::expr(as.factor(!!sym(input$color))),
-                 rlang::expr(!!sym(input$color)))
+    color_expr <- if_else_expr(input$color_scale == "discrete",
+                               rlang::expr(as.factor(!!sym(input$color))),
+                               rlang::expr(!!sym(input$color)))
     mapping <- append_exprs(mapping, color = !!(color_expr))
   }
 
   # ALPHA
-  setting <- append_exprs(setting, alpha = !!as.numeric(input$alpha))
+  if (input$alpha != 1)
+    setting <- append_exprs(setting, alpha = !!as.numeric(input$alpha))
 
   # SIZE
   if (input$size_type == "set") {

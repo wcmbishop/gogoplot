@@ -4,6 +4,7 @@ add_labs <- function(p, input) {
   if (!all(req_inputs %in% names(input)))
     stop("some required input fields are missing")
 
-  p <- p %++% labs(color = !!(input$color))
+  if (input$color != CONST_NONE)
+    p <- p %++% labs(color = !!(input$color))
   p
 }

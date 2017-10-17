@@ -4,6 +4,10 @@ library(ggplot2)
 
 gogoplot(mtcars, FALSE)
 
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(color = as.factor(cut)), alpha = 0.2, size = 2) +
+  labs(color = "cut")
+
 
 gogoplot(diamonds, TRUE)
 
