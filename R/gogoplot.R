@@ -30,7 +30,7 @@ gogoplot <- function(.data, popup = FALSE) {
   if (!inherits(.data, "data.frame"))
     stop(".data must be a data-frame.")
 
-  # capture name of passed .data object
+  # # capture name of passed .data object
   data_name <- deparse(substitute(.data))
 
   ui <- gogoplot_ui()

@@ -6,7 +6,7 @@
 #' for interactively building data visualziations with ggplot. You can
 #' then return the plot or the code that built it.
 #'
-#' @import ggplot2 shiny
+#' @import ggplot2 shiny rlang
 #' @importFrom magrittr "%>%"
 #'
 #' @author

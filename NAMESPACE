@@ -3,6 +3,7 @@
 export("%++%")
 export(gogoplot)
 import(ggplot2)
+import(rlang)
 import(shiny)
 importFrom(magrittr,"%>%")
 importFrom(rlang,"!!")

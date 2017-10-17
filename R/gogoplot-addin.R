@@ -11,6 +11,8 @@ gogogplot_addin <- function() {
 
   # set the default data to use based on the selection.
   text <- context$selection[[1]]$text
-  obj <- get(text, envir = .GlobalEnv)
-  gogoplot(obj)
+  # obj <- get(text, envir = .GlobalEnv)
+  # assign(text, obj)
+  assign(text, get(text, envir = .GlobalEnv))
+  rlang::eval_tidy(quo(gogoplot(!!sym(text))))
 }
