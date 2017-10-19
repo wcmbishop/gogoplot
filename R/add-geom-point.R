@@ -29,7 +29,8 @@ add_geom_point <- function(p, input) {
 
   # SIZE
   if (input$size_type == "set") {
-    setting <- append_exprs(setting, size = !!as.numeric(input$size_set))
+    if (input$size_set != 1.5)
+      setting <- append_exprs(setting, size = !!as.numeric(input$size_set))
   } else if (input$size_map != CONST_NONE) {
     mapping <- append_exprs(mapping, size = !!sym(input$size_map))
   }

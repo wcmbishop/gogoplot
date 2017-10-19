@@ -40,7 +40,7 @@ gogoplot_server <- function(.data, data_name) {
     })
     output$size_set <- shiny::renderUI({
       sliderInput("size_set", "size setting:",
-                  min = 1, max = 5, value = 2, step = 0.5)
+                  min = 1, max = 5, value = 1.5, step = 0.5)
     })
     output$size_map <- shiny::renderUI({
       selectInput("size_map", "size mapping:",
