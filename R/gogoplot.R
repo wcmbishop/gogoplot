@@ -30,14 +30,14 @@ gogoplot <- function(.data, popup = FALSE) {
   # # capture name of passed .data object
   data_name <- deparse(substitute(.data))
 
-  ui <- gogoplot_ui()
+  ui <- gogoplot_ui(data_name)
   server <- gogoplot_server(.data, data_name)
 
   # select viewer
   if (popup) {
-    viewer = shiny::dialogViewer("GoGoPlot", width = 900, heigh = 800)
+    viewer = shiny::dialogViewer("GoGoPlot", width = 900, height = 800)
   } else {
-    viewer = shiny::paneViewer()
+    viewer = shiny::paneViewer(minHeight = 800)
   }
   shiny::runGadget(app = ui,
                    server = server,

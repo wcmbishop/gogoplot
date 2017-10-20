@@ -97,17 +97,21 @@ gogoplot_server <- function(.data, data_name) {
 
     # ---- plot_code ----
     plot_code <- shiny::reactive({
-      attr(plot(), "gogoplot")
+      get_plot_code(plot())
     })
 
     # ---- render_code ----
-    output$render_code <- shiny::renderText({
+    output$render_code_html <- shiny::renderText({
       code <- paste0(
         "<code>",
         paste0(plot_code(), collapse = " +<br>&nbsp;&nbsp;&nbsp;&nbsp;"),
         "</code>"
         )
       code
+    })
+
+    output$render_code_text <- shiny::renderText({
+      paste0(plot_code(), collapse = " +\n  ")
     })
 
     # ---- data_table ----

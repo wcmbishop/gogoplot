@@ -1,10 +1,10 @@
 
-gogoplot_ui <- function() {
+gogoplot_ui <- function(data_name) {
   miniUI::miniPage(
-    miniUI::gadgetTitleBar("go-go plot!"),
+    miniUI::gadgetTitleBar(data_name),
     miniUI::miniTabstripPanel(
       plotTabPanel,
-      codeTabPanel,
+      # codeTabPanel,
       dataTabPanel
     )
   )

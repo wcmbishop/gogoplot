@@ -1,8 +1,9 @@
 context("add_geom_point")
 
 p_blank <- new_gogoplot(ggplot(mtcars, aes(disp, hp)))
-default_input <- list(color = CONST_NONE, color_scale = "continuous", alpha = 1,
-                      size_type = "set", size_set = 1.5, size_map = CONST_NONE)
+default_input <- list(color = CONST_NONE, color_scale = "continuous",
+                      alpha = 1, size_mappping_enabled = FALSE,
+                      size_set = 1.5, size_map = CONST_NONE)
 
 test_that("default settings", {
   input <- default_input
@@ -54,7 +55,7 @@ test_that("set size", {
 
 test_that("map size", {
   input <- default_input
-  input$size_type <- "map"
+  input$size_mappping_enabled <- TRUE
   input$size_map <- "mpg"
   p <- add_geom_point(p_blank, input)
   code <- get_plot_code(p)
@@ -77,6 +78,6 @@ test_that("bad color scale", {
 
 test_that("bad size type", {
   input <- default_input
-  input$size_type <- "wrong"
-  expect_error(add_geom_point(p_blank, input), "size_type must be")
+  input$size_mappping_enabled <- "wrong"
+  expect_error(add_geom_point(p_blank, input), "size_mappping_enabled must be")
 })

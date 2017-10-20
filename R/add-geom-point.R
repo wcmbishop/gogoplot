@@ -1,11 +1,11 @@
 add_geom_point <- function(p, input) {
   # validate inputs
   req_inputs <- c("alpha", "color", "color_scale",
-                  "size_type", "size_map", "size_set")
+                  "size_mappping_enabled", "size_map", "size_set")
   if (!all(req_inputs %in% names(input)))
     stop("some required input fields are missing")
-  if (!(input$size_type %in% c("map", "set")))
-    stop("size_type must be either 'map' or 'set'")
+  if (!is.logical(input$size_mappping_enabled))
+    stop("size_mappping_enabled must be a logical value")
   if (!(input$color_scale %in% c("discrete", "continuous")))
     stop("color_scale must be either 'discrete' or 'continuous'")
 
@@ -28,11 +28,12 @@ add_geom_point <- function(p, input) {
     setting <- append_exprs(setting, alpha = !!as.numeric(input$alpha))
 
   # SIZE
-  if (input$size_type == "set") {
+  if (input$size_mappping_enabled) {
+    if (input$size_map != CONST_NONE)
+      mapping <- append_exprs(mapping, size = !!sym(input$size_map))
+  } else {
     if (input$size_set != 1.5)
       setting <- append_exprs(setting, size = !!as.numeric(input$size_set))
-  } else if (input$size_map != CONST_NONE) {
-    mapping <- append_exprs(mapping, size = !!sym(input$size_map))
   }
 
   # compile expressions into layer
