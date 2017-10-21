@@ -1,3 +1,14 @@
+## gogoplot 0.1.2
+
+* UI has been updated to focus solely on creating plots and returning plot code
+    * removed "data" tab (and tabs completely)
+    * added ability to show plot code above the plot
+    * updated options for gadget viewing to try to make sure the gadget window is large enough
+* added more complete support for "histogram" plot type
+* various backend updates (e.g. added tests for internal plotting functions)
+
+
+-------------
 ## gogoplot 0.1.1
 Big improvements!
 

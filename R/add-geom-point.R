@@ -1,59 +1,54 @@
 add_geom_point <- function(p, input) {
   # validate inputs
-  req_inputs <- c("alpha", "color", "color_scale",
-                  "size_type", "size_map", "size_set")
+  req_inputs <- c("alpha", "color_mapping_enabled",
+                  "color_map", "color_set", "color_discrete",
+                  "size_mapping_enabled", "size_map", "size_set")
   if (!all(req_inputs %in% names(input)))
     stop("some required input fields are missing")
-  if (!(input$size_type %in% c("map", "set")))
-    stop("size_type must be either 'map' or 'set'")
-  if (!(input$color_scale %in% c("discrete", "continuous")))
-    stop("color_scale must be either 'discrete' or 'continuous'")
+  if (!is.logical(input$size_mapping_enabled))
+    stop("size_mapping_enabled must be a logical value")
+  if (!is.logical(input$color_mapping_enabled))
+    stop("color_mapping_enabled must be a logical value")
+  if (!is.logical(input$color_discrete))
+    stop("color_discrete must be a logical value")
 
-  # prep color quo
-  if (input$color_scale == "discrete") {
-    quo_color <- quo(as.factor(!!sym(input$color)))
+
+  # build up list of "mapping" and "setting" expressions
+  # which will go into a ggplot2 layer at the end
+  mapping <- rlang::exprs()
+  setting <- rlang::exprs()
+
+  # COLOR
+  if (input$color_mapping_enabled) {
+    if (input$color_map != CONST_NONE) {
+      color_expr <- if_else_expr(input$color_discrete == TRUE,
+                                 rlang::expr(as.factor(!!sym(input$color_map))),
+                                 rlang::expr(!!sym(input$color_map)))
+      mapping <- append_exprs(mapping, color = !!(color_expr))
+    }
   } else {
-    quo_color <- quo(!!sym(input$color))
+    if (input$color_set != CONST_NONE)
+      setting <- append_exprs(setting, color = !!input$color_set)
   }
 
-  # build geom_point for each combination of inputs
-  if (input$color == "none" && input$size_type == "set") {
-    # no color, set size
-    p <- p %++% geom_point(size = !!input$size_set,
-                           alpha = !!input$alpha)
+  # ALPHA
+  if (input$alpha != 1)
+    setting <- append_exprs(setting, alpha = !!as.numeric(input$alpha))
 
-  } else if (input$color == "none" && input$size_type == "map") {
-    # no color, map size
-    if (input$size_map == "none") {
-      # no size
-      p <- p %++% geom_point(alpha = !!input$alpha)
-    } else {
-      # map size
-      p <- p %++% geom_point(aes(size = !!sym(input$size_map)),
-                             alpha = !!input$alpha)
-    }
-
-  } else if (input$color != "none" && input$size_type == "set") {
-    # map color, set size
-    p <- p %++% geom_point(aes(color = UQE(quo_color)),
-                           size = !!input$size_set,
-                           alpha = !!input$alpha)
-
-  } else if (input$color != "none" && input$size_type == "map") {
-    # map color, map size
-    if (input$size_map == "none") {
-      # no size
-      p <- p %++% geom_point(aes(color = UQE(quo_color)),
-                             alpha = !!input$alpha)
-    } else {
-      # map size
-      p <- p %++% geom_point(aes(color = UQE(quo_color),
-                                 size = !!sym(input$size_map)),
-                             alpha = !!input$alpha)
-    }
-
+  # SIZE
+  if (input$size_mapping_enabled) {
+    if (input$size_map != CONST_NONE)
+      mapping <- append_exprs(mapping, size = !!sym(input$size_map))
   } else {
-    stop("ruh-roh...unexpected inputs encountered")
+    if (input$size_set != 1.5)
+      setting <- append_exprs(setting, size = !!as.numeric(input$size_set))
+  }
+
+  # compile expressions into layer
+  if (length(mapping) > 0) {
+    p <- p %++% geom_point(aes(!!!mapping), !!!setting)
+  } else {
+    p <- p %++% geom_point(!!!setting)
   }
   p
 }

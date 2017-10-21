@@ -6,8 +6,7 @@
 \title{Interactive ggplot2 gadgets.}
 \description{
 The \pkg{gogoplot} package provides simple HTML gadgets
-for interactively building data visualziations with ggplot. You can
-then return the plot or the code that built it.
+for interactively building data visualziations with ggplot.
 }
 \author{
 Will Bishop \email{wbishop@tesla.com}

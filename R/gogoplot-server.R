@@ -8,43 +8,56 @@ gogoplot_server <- function(.data, data_name) {
 
   function(input, output, session) {
 
-    # dynamic UI input elements
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    choices <- select_choices(.data)
+    # ---- render UI ----
+    var_choices <- select_choices(.data)
+    output$plot_type <- shiny::renderUI({
+      selectInput("plot_type", "Plot Type:",
+                  choices = c(CONST_POINT, CONST_HISTOGRAM),
+                  selected = CONST_POINT)
+    })
     output$xvar <- shiny::renderUI({
       selectInput("xvar", "x variable:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$yvar <- shiny::renderUI({
       selectInput("yvar", "y variable:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
-    output$color <- shiny::renderUI({
-      selectInput("color", NULL,
-                  choices = choices, selected = CONST_NONE)
+    output$color_map <- shiny::renderUI({
+      selectInput("color_map", "color mapping:",
+                  choices = var_choices, selected = CONST_NONE)
+    })
+    output$color_set <- shiny::renderUI({
+      selectInput("color_set", "color setting:",
+                  choices = c(CONST_NONE, "red", "orange", "yellow", "green",
+                              "blue", "purple"),
+                  selected = CONST_NONE)
+    })
+    output$color_discrete <- shiny::renderUI({
+      shiny::checkboxInput('color_discrete', 'force discrete', value = FALSE)
     })
     output$alpha <- shiny::renderUI({
-      sliderInput("alpha", "alpha",
+      sliderInput("alpha", "alpha:",
                   min = 0, max = 1, value = 1, step = 0.1)
     })
     output$facet_row <- shiny::renderUI({
       selectInput("facet_row", "facet rows:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$facet_col <- shiny::renderUI({
       selectInput("facet_col", "facet cols:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
     output$size_set <- shiny::renderUI({
       sliderInput("size_set", "size setting:",
-                  min = 1, max = 5, value = 2, step = 0.5)
+                  min = 1, max = 6, value = 1.5, step = 0.5)
     })
     output$size_map <- shiny::renderUI({
       selectInput("size_map", "size mapping:",
-                  choices = choices, selected = CONST_NONE)
+                  choices = var_choices, selected = CONST_NONE)
     })
 
-    # Render the plot
+    # ---- plot_display ----
     output$plot_display <- shiny::renderPlot({
       if (input$auto_plot == TRUE) {
         plot <- plot()
@@ -55,33 +68,55 @@ gogoplot_server <- function(.data, data_name) {
       plot
     })
 
+    # ---- plot ----
     plot <- shiny::reactive({
-      validate(
-        need(input$xvar, 'Select an x variable.'),
-        need(input$yvar, 'Select a y variable.'),
-        need(input$xvar != CONST_NONE, 'Select an x variable.'),
-        need(input$yvar != CONST_NONE, 'Select a y variable.')
-      )
+      validate(need(input$plot_type, "  Select a plot type"))
+      validate_plot_inputs(input)
 
-      # empty plot object
-      p <- new_gogoplot(ggplot(!!sym(data_name),
-                               aes(!!sym(input$xvar), !!sym(input$yvar))))
-      p <- add_geom_point(p, input)
-      p <- add_guides(p, input)
-      p <- add_labs(p, input)
-      p <- add_facet_grid(p, input)
+      # build plot
+      p <- base_plot(data_name, input)
+      p <- p %>%
+        add_facet_grid(input) %>%
+        # add_guides(input) %>%
+        add_labs(input) %>%
+        add_theme(input)
       p
     })
 
     # ---- plot_code ----
     plot_code <- shiny::reactive({
-      attr(plot(), "gogoplot")
+      get_plot_code(plot())
     })
 
+    # ---- render_code ----
+    output$render_code_html <- shiny::renderText({
+      code <- paste0(
+        "<code>",
+        paste0(plot_code(), collapse = " +<br>&nbsp;&nbsp;&nbsp;&nbsp;"),
+        "</code>"
+        )
+      code
+    })
+
+    output$render_code_text <- shiny::renderText({
+      paste0(plot_code(), collapse = " +\n  ")
+    })
+
+    # ---- data_table ----
     output$data_table <- shiny::renderDataTable({
       .data
     }, options = list(pageLength = 5))
+    output$data_table_header <- shiny::renderText({
+      header <- shiny::tags$h3(sprintf("%s: %i x %i", data_name,
+                                       nrow(.data), ncol(.data)))
+      header <- paste(header)
+      header
+    })
 
+    # ---- update button ----
+    shiny::observeEvent(input$btn_update, {
+      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
+    })
     # indicate if plot is stale
     shiny::observeEvent(plot(), {
       if (input$auto_plot == T) {
@@ -91,39 +126,23 @@ gogoplot_server <- function(.data, data_name) {
       }
     })
 
-    # buttons
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    # update plot
-    shiny::observeEvent(input$btn_update, {
-      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
-    })
-
-    # return plot code
-    shiny::observeEvent(input$btn_code, {
+    # ---- done button ----
+    shiny::observeEvent(input$done, {
       code_str <- paste0(plot_code(), collapse = " +\n  ")
-      # return function call
-      if(rstudioapi::isAvailable()){
+      # print(plot())
+      if (rstudioapi::isAvailable()) {
         rstudioapi::insertText(text = code_str)
-        shiny::stopApp()
+        shiny::stopApp(invisible(code_str))
       } else{
-        shiny::stopApp(code_str)
+        message(cat(cod_str))
+        shiny::stopApp(invisible(code_str))
       }
     })
 
-    # return plot object
-    shiny::observeEvent(input$btn_plot, {
-      shiny::stopApp(plot())
+    # ---- cancel button ----
+    shiny::observeEvent(input$cancel, {
+      shiny::stopApp()
     })
 
-    # download plot image
-    output$btn_save <- downloadHandler(
-      filename = function() {
-        paste0(Sys.Date(), '-plot.png')
-      },
-      content = function(con) {
-        ggsave(con, output$plot, device = 'png')
-      }
-    )
   }
 }

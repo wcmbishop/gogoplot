@@ -1,12 +1,12 @@
 
-gogoplot_ui <- function(data_name) {
-  miniUI::miniPage(
-    miniUI::gadgetTitleBar(data_name),
-    miniUI::miniContentPanel(
-      padding = 8,
-      scrollable = FALSE,
-      shiny::fillRow(
-        flex = c(NA, 1),
+plotTabPanel <- miniUI::miniTabPanel(
+  "plot",
+  icon = shiny::icon("bar-chart"),
+  miniUI::miniContentPanel(
+    padding = 8,
+    scrollable = FALSE,
+    shiny::fillRow(
+      flex = c(NA, 1),
         shiny::fillCol(
           flex = c(1, NA),
           width = 120,
@@ -20,11 +20,9 @@ gogoplot_ui <- function(data_name) {
             ),
             shiny::conditionalPanel(
               "input.config == 'fields'",
+              # shiny::helpText(shiny::strong('FIELDS')),
               shiny::uiOutput("xvar"),
-              shiny::conditionalPanel(
-                "input.plot_type == 'point'",
-                shiny::uiOutput("yvar")
-              )
+              shiny::uiOutput("yvar")
             ),
             shiny::conditionalPanel(
               "input.config == 'color'",
@@ -59,6 +57,7 @@ gogoplot_ui <- function(data_name) {
             ),
             shiny::conditionalPanel(
               "input.config == 'facet'",
+              # shiny::helpText(shiny::strong('FACET')),
               shiny::uiOutput("facet_row"),
               shiny::uiOutput("facet_col"),
               shiny::checkboxInput('facet_label', 'show field label',
@@ -72,20 +71,19 @@ gogoplot_ui <- function(data_name) {
             shiny::checkboxInput("auto_plot", "auto-update",
                                  value = TRUE),
             shiny::actionButton("btn_update", "update plot")
-          )
+            )
         ),
-        miniUI::miniContentPanel(
-          padding = 5,
-          shiny::fillCol(
-            flex = c(NA, 1),
-            shiny::conditionalPanel(
-              "input.show_code == true",
+      miniUI::miniContentPanel(
+        padding = 5,
+        shiny::fillCol(
+          flex = c(NA, 1),
+          shiny::conditionalPanel(
+            "input.show_code == true",
               shiny::verbatimTextOutput("render_code_text")
-            ),
-            shiny::plotOutput("plot_display", height = "100%")
-          )
+          ),
+          shiny::plotOutput("plot_display", height = "100%")
         )
       )
     )
   )
-}
+)

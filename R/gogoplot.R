@@ -8,14 +8,14 @@
 #' @param popup  logical value to display the UI as a pop-up window.
 #'               The default is FALSE, which will show the UI in
 #'               the Viewer pane.
+#' @param width  width of the pop-up window, in pixels.
+#' @param height height of the pop-up window, in pixels.
 #'
-#' @return the UI supports different return objects:
-#' \itemize{
-#'    \item Return Plot - returns a \pkg{ggplot2} plot object
-#'    \item Return Code - returns a character vector of the plotting code. If
-#'    you're using RStudio, this will insert the code at your cursor using the
-#'    \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}} function.
-#' }
+#' @return When using RStudio, the generated plot code is inserted at your
+#' cursor using the \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}}
+#' function. Outside of RStudio, the code is printed as a message.
+#' Plot code is also invisibly returned as a string, if you want to capture
+#' the return object.
 #'
 #' @examples
 #' \dontrun{
@@ -23,27 +23,26 @@
 #' gogoplot(mtcars)
 #' }
 #'
-#' @import ggplot2 shiny
-#' @importFrom rlang !! sym UQ UQE quo enquo
+#' @import ggplot2 shiny rlang
 #' @export
-gogoplot <- function(.data, popup = FALSE) {
+gogoplot <- function(.data, popup = FALSE, width = 900, height = 800) {
   if (!inherits(.data, "data.frame"))
     stop(".data must be a data-frame.")
 
-  # capture name of passed .data object
+  # # capture name of passed .data object
   data_name <- deparse(substitute(.data))
 
-  ui <- gogoplot_ui()
+  ui <- gogoplot_ui(data_name)
   server <- gogoplot_server(.data, data_name)
 
   # select viewer
   if (popup) {
-    viewer = shiny::dialogViewer("GoGoPlot", width = 900, heigh = 800)
+    viewer = shiny::dialogViewer("GoGoPlot", width = width, height = height)
   } else {
-    viewer = shiny::paneViewer()
+    viewer = shiny::paneViewer(minHeight = 800)
   }
   shiny::runGadget(app = ui,
                    server = server,
-                   viewer = viewer)
+                   viewer = viewer,
+                   stopOnCancel = FALSE)
 }
-

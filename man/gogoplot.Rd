@@ -4,7 +4,7 @@
 \alias{gogoplot}
 \title{Interactively build a plot.}
 \usage{
-gogoplot(.data, popup = FALSE)
+gogoplot(.data, popup = FALSE, width = 900, height = 800)
 }
 \arguments{
 \item{.data}{a data-frame to visualize}
@@ -12,15 +12,17 @@ gogoplot(.data, popup = FALSE)
 \item{popup}{logical value to display the UI as a pop-up window.
 The default is FALSE, which will show the UI in
 the Viewer pane.}
+
+\item{width}{width of the pop-up window, in pixels.}
+
+\item{height}{height of the pop-up window, in pixels.}
 }
 \value{
-the UI supports different return objects:
-\itemize{
-   \item Return Plot - returns a \pkg{ggplot2} plot object
-   \item Return Code - returns a character vector of the plotting code. If
-   you're using RStudio, this will insert the code at your cursor using the
-   \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}} function.
-}
+When using RStudio, the generated plot code is inserted at your
+cursor using the \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}}
+function. Outside of RStudio, the code is printed as a message.
+Plot code is also invisibly returned as a string, if you want to capture
+the return object.
 }
 \description{
 Launch an interactive shiny gadget that lets you

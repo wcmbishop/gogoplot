@@ -1,0 +1,4 @@
+Name: gogoplot
+Description: Build a plot interactively.
+Binding: gogogplot_addin
+Interactive: true
