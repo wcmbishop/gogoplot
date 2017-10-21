@@ -1,8 +1,9 @@
 context("add_geom_point")
 
 p_blank <- new_gogoplot(ggplot(mtcars, aes(disp, hp)))
-default_input <- list(color = CONST_NONE, color_scale = "continuous",
-                      alpha = 1, size_mappping_enabled = FALSE,
+default_input <- list(color_map = CONST_NONE, color_set = CONST_NONE,
+                      color_discrete = FALSE, color_mapping_enabled = FALSE,
+                      alpha = 1, size_mapping_enabled = FALSE,
                       size_set = 1.5, size_map = CONST_NONE)
 
 test_that("default settings", {
@@ -28,7 +29,8 @@ test_that("set alpha", {
 
 test_that("map color continuous", {
   input <- default_input
-  input$color <- "cyl"
+  input$color_mapping_enabled <- TRUE
+  input$color_map <- "cyl"
   p <- add_geom_point(p_blank, input)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_point(aes(color = cyl))")
@@ -36,11 +38,20 @@ test_that("map color continuous", {
 
 test_that("map color discrete", {
   input <- default_input
-  input$color <- "cyl"
-  input$color_scale = "discrete"
+  input$color_mapping_enabled <- TRUE
+  input$color_map <- "cyl"
+  input$color_discrete <- TRUE
   p <- add_geom_point(p_blank, input)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_point(aes(color = as.factor(cyl)))")
+})
+
+test_that("set color", {
+  input <- default_input
+  input$color_set <- "blue"
+  p <- add_geom_point(p_blank, input)
+  code <- get_plot_code(p)
+  expect_equal(code[2], "geom_point(color = \"blue\")")
 })
 
 # ---- size ----
@@ -55,7 +66,7 @@ test_that("set size", {
 
 test_that("map size", {
   input <- default_input
-  input$size_mappping_enabled <- TRUE
+  input$size_mapping_enabled <- TRUE
   input$size_map <- "mpg"
   p <- add_geom_point(p_blank, input)
   code <- get_plot_code(p)
@@ -66,18 +77,18 @@ test_that("map size", {
 
 test_that("missing input field", {
   input <- default_input
-  input$color_scale <- NULL
+  input$color_map <- NULL
   expect_error(add_geom_point(p_blank, input), "fields are missing")
 })
 
 test_that("bad color scale", {
   input <- default_input
-  input$color_scale <- "wrong"
-  expect_error(add_geom_point(p_blank, input), "color_scale must be")
+  input$color_discrete <- "wrong"
+  expect_error(add_geom_point(p_blank, input), "color_discrete must be")
 })
 
 test_that("bad size type", {
   input <- default_input
-  input$size_mappping_enabled <- "wrong"
-  expect_error(add_geom_point(p_blank, input), "size_mappping_enabled must be")
+  input$size_mapping_enabled <- "wrong"
+  expect_error(add_geom_point(p_blank, input), "size_mapping_enabled must be")
 })

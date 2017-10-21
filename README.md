@@ -11,9 +11,9 @@ This package is a work in progress. I would love help improving it! Check out th
 Install
 -------
 
-You can install `gogoplot` by running the command below in R. To permanently add the Tesla CRAN repository to your computer, follow instructions [here](https://cran.teslamotors.com/).
+You can install the latest dev version of `gogoplot` directly from BitBucket by running the code below:
 
-    install.packages("gogoplot", repos = c("https://cran.teslamotors.com", "https://cran.rstudio.com"))
+    devtools::install_git(url = "https://stash.teslamotors.com/scm/fsm/gogoplot.git", branch = 'develop')
 
 <br>
 

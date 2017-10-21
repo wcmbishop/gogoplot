@@ -2,7 +2,21 @@
 library(rlang)
 library(ggplot2)
 
-gogoplot(mtcars, FALSE)
+code <- gogoplot(mtcars, TRUE)
+
+mtcars
+
+ggplot(mtcars, aes(disp, hp)) +
+  geom_point(aes(size = mpg, color = as.factor(cyl))) +
+  facet_grid(cyl ~ ., labeller = label_both) +
+  # theme_gray(15) +
+  labs(color = "cyl") +
+  ggtitle("mtcars plot")
+
+plotly::ggplotly()
+
+
+diamonds
 
 ggplot(diamonds, aes(carat, price)) +
   geom_point(aes(color = as.factor(cut)), alpha = 0.2, size = 2) +

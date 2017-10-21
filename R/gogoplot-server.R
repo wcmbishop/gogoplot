@@ -12,7 +12,8 @@ gogoplot_server <- function(.data, data_name) {
     var_choices <- select_choices(.data)
     output$plot_type <- shiny::renderUI({
       selectInput("plot_type", "Plot Type:",
-                  choices = c("scatter", "histogram"), selected = "scatter")
+                  choices = c(CONST_POINT, CONST_HISTOGRAM),
+                  selected = CONST_POINT)
     })
     output$xvar <- shiny::renderUI({
       selectInput("xvar", "x variable:",
@@ -22,9 +23,18 @@ gogoplot_server <- function(.data, data_name) {
       selectInput("yvar", "y variable:",
                   choices = var_choices, selected = CONST_NONE)
     })
-    output$color <- shiny::renderUI({
-      selectInput("color", NULL,
+    output$color_map <- shiny::renderUI({
+      selectInput("color_map", "color mapping:",
                   choices = var_choices, selected = CONST_NONE)
+    })
+    output$color_set <- shiny::renderUI({
+      selectInput("color_set", "color setting:",
+                  choices = c(CONST_NONE, "red", "orange", "yellow", "green",
+                              "blue", "purple"),
+                  selected = CONST_NONE)
+    })
+    output$color_discrete <- shiny::renderUI({
+      shiny::checkboxInput('color_discrete', 'force discrete', value = FALSE)
     })
     output$alpha <- shiny::renderUI({
       sliderInput("alpha", "alpha:",
@@ -40,7 +50,7 @@ gogoplot_server <- function(.data, data_name) {
     })
     output$size_set <- shiny::renderUI({
       sliderInput("size_set", "size setting:",
-                  min = 1, max = 5, value = 1.5, step = 0.5)
+                  min = 1, max = 6, value = 1.5, step = 0.5)
     })
     output$size_map <- shiny::renderUI({
       selectInput("size_map", "size mapping:",
@@ -61,35 +71,13 @@ gogoplot_server <- function(.data, data_name) {
     # ---- plot ----
     plot <- shiny::reactive({
       validate(need(input$plot_type, "  Select a plot type"))
-      if (input$plot_type == "scatter") {
-        validate(
-          need(input$xvar, "  Select an x variable."),
-          need(input$yvar, "  Select a y variable."),
-          need(input$xvar != CONST_NONE, "  Select an x variable."),
-          need(input$yvar != CONST_NONE, "  Select a y variable.")
-        )
-      } else if (input$plot_type == "histogram") {
-        validate(
-          need(input$xvar, "  Select an x variable."),
-          need(input$xvar != CONST_NONE, "  Select an x variable.")
-        )
-      }
+      validate_plot_inputs(input)
 
       # build plot
-      if (input$plot_type == "scatter") {
-        p <- new_gogoplot(
-          ggplot(!!sym(data_name), aes(!!sym(input$xvar), !!sym(input$yvar)))
-          ) %>%
-          add_geom_point(input)
-      } else if (input$plot_type == "histogram") {
-        p <- new_gogoplot(
-          ggplot(!!sym(data_name), aes(!!sym(input$xvar)))
-          ) %>%
-          add_geom_histogram(input)
-      }
+      p <- base_plot(data_name, input)
       p <- p %>%
         add_facet_grid(input) %>%
-        add_guides(input) %>%
+        # add_guides(input) %>%
         add_labs(input) %>%
         add_theme(input)
       p
