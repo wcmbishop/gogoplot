@@ -6,7 +6,7 @@ Date: 2017-10-20
 Authors@R: person("Will", "Bishop", email = "wbishop@tesla.com", 
   role = c("cre", "aut"))
 Description: Simple HTML gadgets for interactively building data visualziations
-    with ggplot. You can then return the plot or the code that built it.
+    with ggplot.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,6 +14,7 @@ Depends:
   R (>= 3.3.1)
 Imports:
   ggplot2 (>= 2.2.1),
+  magrittr (>= 1.5),
   miniUI (>= 0.1.1),
   rlang (>= 0.1.2),
   rstudioapi (>= 0.6.0),

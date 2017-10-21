@@ -66,8 +66,9 @@
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
-<p>You can install <code>gogoplot</code> by running the command below in R. To permanently add the Tesla CRAN repository to your computer, follow instructions <a href="https://cran.teslamotors.com/">here</a>.</p>
-<pre><code>install.packages("gogoplot", repos = c("https://cran.teslamotors.com", "https://cran.rstudio.com"))</code></pre>
+<p><code>gogoplot</code> is only currently only available on github, as a development version. You can install this with the code below, using the <code>devtools</code> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"wcmbishop/gogoplot"</span>, <span class="dt">force =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><br></p>
 </div>
 <div id="example" class="section level2">

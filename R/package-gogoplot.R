@@ -3,8 +3,7 @@
 #' @docType package
 #'
 #' @description The \pkg{gogoplot} package provides simple HTML gadgets
-#' for interactively building data visualziations with ggplot. You can
-#' then return the plot or the code that built it.
+#' for interactively building data visualziations with ggplot.
 #'
 #' @import ggplot2 shiny rlang
 #' @importFrom magrittr "%>%"
