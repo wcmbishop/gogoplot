@@ -26,7 +26,6 @@ plotTabPanel <- miniUI::miniTabPanel(
             ),
             shiny::conditionalPanel(
               "input.config == 'color'",
-              # shiny::helpText(shiny::strong('COLOR')),
               shinyWidgets::switchInput("color_mapping_enabled", label = "(aes)",
                                         value = FALSE, onLabel = "map",
                                         offLabel = "set"),
@@ -39,14 +38,22 @@ plotTabPanel <- miniUI::miniTabPanel(
             ),
             shiny::conditionalPanel(
               "input.config == 'size'",
-              # shiny::helpText(shiny::strong('SIZE')),
-              shinyWidgets::switchInput("size_mapping_enabled", label = "(aes)",
-                                        value = FALSE, onLabel = "map",
-                                        offLabel = "set"),
-              shiny::conditionalPanel("input.size_mapping_enabled == false",
-                                      shiny::uiOutput("size_set")),
-              shiny::conditionalPanel("input.size_mapping_enabled == true",
-                                      shiny::uiOutput("size_map"))
+              shiny::conditionalPanel(
+                "input.plot_type == 'point'",
+                shinyWidgets::switchInput("size_mapping_enabled", label = "(aes)",
+                                          value = FALSE, onLabel = "map",
+                                          offLabel = "set"),
+                shiny::conditionalPanel("input.size_mapping_enabled == false",
+                                        shiny::uiOutput("size_set")),
+                shiny::conditionalPanel("input.size_mapping_enabled == true",
+                                        shiny::uiOutput("size_map"))
+              ),
+              shiny::conditionalPanel(
+                "input.plot_type == 'histogram'",
+                shiny::numericInput("bins", "bins:", value = 30,
+                                    min = 1, max = 1000),
+                shiny::numericInput("binwidth", "bin width:", value = NA)
+              )
             ),
             shiny::conditionalPanel(
               "input.config == 'facet'",
