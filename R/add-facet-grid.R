@@ -7,13 +7,13 @@ add_facet_grid <- function(p, input) {
     stop("facet_label must be a logical value")
 
   if (any(c(input$facet_row, input$facet_col) != CONST_NONE)) {
-    facet_lab_expr <- if_else_expr(input$facet_label == TRUE,
-                                   rlang::expr(label_both),
-                                   rlang::expr(label_value))
+    label_expr <- rlang::exprs()
+    if (input$facet_label)
+      label_expr <- append_exprs(label_expr, labeller = label_both)
     facet_row <- ifelse(input$facet_row == CONST_NONE, ".", input$facet_row)
     facet_col <- ifelse(input$facet_col == CONST_NONE, ".", input$facet_col)
     p <- p %++% facet_grid(!!sym(facet_row) ~ !!sym(facet_col),
-                           labeller = !!(facet_lab_expr))
+                           !!!label_expr)
   }
   p
 }

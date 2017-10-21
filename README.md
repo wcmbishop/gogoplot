@@ -2,7 +2,7 @@
 gogoplot
 ========
 
-`gogoplot` provides a simple GUI for building a [`ggplot`](http://ggplot2.tidyverse.org) data visualization (using a [`shiny` HTML gadget](https://shiny.rstudio.com/articles/gadgets.html)). A data viz GUI is not a new thing. But the feature that `gogoplot` strives to achieve is the ability to return *either* the final plot *or* the code used to make that plot. This makes `gogoplot` an educational tool and a way to make your visualizations reproducible.
+`gogoplot` provides a simple GUI for building a [`ggplot`](http://ggplot2.tidyverse.org) data visualization (using a [`shiny` HTML gadget](https://shiny.rstudio.com/articles/gadgets.html)). A data viz GUI is not a new thing. But the feature that `gogoplot` strives to achieve is the ability to generate and return the code used to make that plot. This makes `gogoplot` an educational tool and a way to make your visualizations reproducible.
 
 This package is a work in progress. I would love help improving it! Check out the "*Contribute*" section if you're interested.
 
@@ -31,6 +31,10 @@ gogoplot(mtcars)
 ```
 
 ![](images/gogoplot.png)
+
+### RStudio Addin
+
+The package also installs a handy **RStudio IDE add-in**, available in the "Addins" drop-down. To use this, highlight a data-frame object in your code and select the the `gogoplot` add-in to run the gadget.
 
 <br>
 

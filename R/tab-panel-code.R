@@ -3,5 +3,7 @@ codeTabPanel <- miniUI::miniTabPanel(
   icon = shiny::icon("code"),
   miniUI::miniContentPanel(
     padding = 15,
-    shiny::htmlOutput("render_code"))
-)
+    shiny::htmlOutput("render_code_html")
+    )
+  )
+
