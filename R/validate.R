@@ -6,16 +6,16 @@ validate_plot_inputs <- function(input) {
 
 validate_point <- function(input) {
   validate(
-    need(input$xvar, "  Select an x variable."),
-    need(input$yvar, "  Select a y variable."),
-    need(input$xvar != CONST_NONE, "  Select an x variable."),
-    need(input$yvar != CONST_NONE, "  Select a y variable.")
+    need(input$xvar, "  Select x variable."),
+    need(input$yvar, "  Select y variable."),
+    need(input$xvar != CONST_NONE, "  Select x variable."),
+    need(input$yvar != CONST_NONE, "  Select y variable.")
   )
 }
 
 validate_histogram <- function(input) {
   validate(
-    need(input$xvar, "  Select an x variable."),
-    need(input$xvar != CONST_NONE, "  Select an x variable.")
+    need(input$xvar, "  Select x variable."),
+    need(input$xvar != CONST_NONE, "  Select x variable.")
   )
 }

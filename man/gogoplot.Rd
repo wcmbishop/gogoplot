@@ -4,7 +4,7 @@
 \alias{gogoplot}
 \title{Interactively build a plot.}
 \usage{
-gogoplot(.data, popup = FALSE)
+gogoplot(.data, popup = FALSE, width = 900, height = 800)
 }
 \arguments{
 \item{.data}{a data-frame to visualize}
@@ -12,6 +12,10 @@ gogoplot(.data, popup = FALSE)
 \item{popup}{logical value to display the UI as a pop-up window.
 The default is FALSE, which will show the UI in
 the Viewer pane.}
+
+\item{width}{width of the pop-up window, in pixels.}
+
+\item{height}{height of the pop-up window, in pixels.}
 }
 \value{
 When using RStudio, the generated plot code is inserted at your
