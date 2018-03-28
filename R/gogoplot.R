@@ -41,6 +41,7 @@ gogoplot <- function(.data, popup = FALSE, width = 900, height = 800) {
   } else {
     viewer = shiny::paneViewer(minHeight = 800)
   }
+
   shiny::runGadget(app = ui,
                    server = server,
                    viewer = viewer,

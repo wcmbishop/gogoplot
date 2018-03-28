@@ -1,6 +1,7 @@
 
 gogoplot_ui <- function(data_name) {
   miniUI::miniPage(
+    shinyjs::useShinyjs(),
     miniUI::gadgetTitleBar(data_name),
     miniUI::miniContentPanel(
       padding = 8,
@@ -12,66 +13,29 @@ gogoplot_ui <- function(data_name) {
           width = 120,
           shiny::fillPage(
             shiny::uiOutput("plot_type"),
-            shiny::radioButtons(
-              "config",
-              label = "Configure...",
-              choices = c("fields", "color", "size", "facet"),
-              selected = "fields"
-            ),
-            shiny::conditionalPanel(
-              "input.config == 'fields'",
-              shiny::uiOutput("xvar"),
-              shiny::conditionalPanel(
-                "input.plot_type == 'point'",
-                shiny::uiOutput("yvar")
-              )
-            ),
-            shiny::conditionalPanel(
-              "input.config == 'color'",
-              shinyWidgets::switchInput("color_mapping_enabled", label = "(aes)",
-                                        value = FALSE, onLabel = "map",
-                                        offLabel = "set"),
-              shiny::conditionalPanel("input.color_mapping_enabled == false",
-                                      shiny::uiOutput("color_set")),
-              shiny::conditionalPanel("input.color_mapping_enabled == true",
-                                      shiny::uiOutput("color_map"),
-                                      shiny::uiOutput("color_discrete")),
-              shiny::uiOutput("alpha")
-            ),
-            shiny::conditionalPanel(
-              "input.config == 'size'",
-              shiny::conditionalPanel(
-                "input.plot_type == 'point'",
-                shinyWidgets::switchInput("size_mapping_enabled", label = "(aes)",
-                                          value = FALSE, onLabel = "map",
-                                          offLabel = "set"),
-                shiny::conditionalPanel("input.size_mapping_enabled == false",
-                                        shiny::uiOutput("size_set")),
-                shiny::conditionalPanel("input.size_mapping_enabled == true",
-                                        shiny::uiOutput("size_map"))
-              ),
-              shiny::conditionalPanel(
-                "input.plot_type == 'histogram'",
-                shiny::numericInput("bins", "bins:", value = 30,
-                                    min = 1, max = 1000),
-                shiny::numericInput("binwidth", "bin width:", value = NA)
-              )
-            ),
-            shiny::conditionalPanel(
-              "input.config == 'facet'",
-              shiny::uiOutput("facet_row"),
-              shiny::uiOutput("facet_col"),
-              shiny::checkboxInput('facet_label', 'show field label',
-                                   value = TRUE)
-            )
+            # display correct plot config
+            shiny::conditionalPanel(sprintf("input.plot_type == '%s'", CONST_POINT),
+                                    GeomPointInput("geom_point")),
+            shiny::conditionalPanel(sprintf("input.plot_type == '%s'", CONST_HISTOGRAM),
+                                    GeomHistogramInput("geom_histogram")),
+            shiny::conditionalPanel(sprintf("input.plot_type == '%s'", CONST_LINE),
+                                    GeomLineInput("geom_line")),
+            shiny::conditionalPanel(sprintf("input.plot_type == '%s'", CONST_BOXPLOT),
+                                    GeomBoxplotInput("geom_boxplot"))
           ),
           shiny::fillPage(
             tags$hr(),
+            shinyWidgets::dropdownButton(
+              LabelsInput("labels"), circle = TRUE, status = "primary",
+              size = "xs", width = "400px", label = "labels", up = TRUE,
+              icon = icon("tag"),
+              tooltip = shinyWidgets::tooltipOptions(title = "Set labels...")
+            ),
             shiny::checkboxInput("show_code", "show code",
                                  value = FALSE),
             shiny::checkboxInput("auto_plot", "auto-update",
                                  value = TRUE),
-            shiny::actionButton("btn_update", "update plot")
+            shinyjs::disabled(shiny::actionButton("btn_update", "update plot"))
           )
         ),
         miniUI::miniContentPanel(
@@ -83,8 +47,8 @@ gogoplot_ui <- function(data_name) {
               shiny::verbatimTextOutput("render_code_text")
             ),
             shiny::plotOutput("plot_display", height = "100%")
+            )
           )
-        )
       )
     )
   )

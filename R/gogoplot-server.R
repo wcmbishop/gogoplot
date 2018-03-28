@@ -12,50 +12,26 @@ gogoplot_server <- function(.data, data_name) {
     var_choices <- select_choices(.data)
     output$plot_type <- shiny::renderUI({
       selectInput("plot_type", "Plot Type:",
-                  choices = c(CONST_POINT, CONST_HISTOGRAM),
+                  choices = c(CONST_POINT, CONST_HISTOGRAM, CONST_LINE,
+                              CONST_BOXPLOT),
                   selected = CONST_POINT)
     })
-    output$xvar <- shiny::renderUI({
-      selectInput("xvar", "x variable:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
-    output$yvar <- shiny::renderUI({
-      selectInput("yvar", "y variable:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
-    output$color_map <- shiny::renderUI({
-      selectInput("color_map", "color mapping:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
-    output$color_set <- shiny::renderUI({
-      selectInput("color_set", "color setting:",
-                  choices = c(CONST_NONE, "red", "orange", "yellow", "green",
-                              "blue", "purple"),
-                  selected = CONST_NONE)
-    })
-    output$color_discrete <- shiny::renderUI({
-      shiny::checkboxInput('color_discrete', 'force discrete', value = FALSE)
-    })
-    output$alpha <- shiny::renderUI({
-      sliderInput("alpha", "alpha:",
-                  min = 0, max = 1, value = 1, step = 0.1)
-    })
-    output$facet_row <- shiny::renderUI({
-      selectInput("facet_row", "facet rows:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
-    output$facet_col <- shiny::renderUI({
-      selectInput("facet_col", "facet cols:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
-    output$size_set <- shiny::renderUI({
-      sliderInput("size_set", "size setting:",
-                  min = 1, max = 6, value = 1.5, step = 0.5)
-    })
-    output$size_map <- shiny::renderUI({
-      selectInput("size_map", "size mapping:",
-                  choices = var_choices, selected = CONST_NONE)
-    })
+
+    # create each geom module
+    geom_point_module <- callModule(GeomPoint, "geom_point",
+                                    var_choices = var_choices,
+                                    data_name = data_name)
+    geom_histogram_module <- callModule(GeomHistogram, "geom_histogram",
+                                        var_choices = var_choices,
+                                        data_name = data_name)
+    geom_line_module <- callModule(GeomLine, "geom_line",
+                                   var_choices = var_choices,
+                                   data_name = data_name)
+    geom_boxplot_module <- callModule(GeomBoxplot, "geom_boxplot",
+                                      var_choices = var_choices,
+                                      data_name = data_name)
+    # labels module
+    labels <- callModule(Labels, "labels")
 
     # ---- plot_display ----
     output$plot_display <- shiny::renderPlot({
@@ -71,14 +47,22 @@ gogoplot_server <- function(.data, data_name) {
     # ---- plot ----
     plot <- shiny::reactive({
       validate(need(input$plot_type, "  Select a plot type"))
-      validate_plot_inputs(input)
 
-      # build plot
-      p <- base_plot(data_name, input)
+      # assign geom from the right module object
+      if (input$plot_type == CONST_POINT) geom <- geom_point_module
+      else if (input$plot_type == CONST_HISTOGRAM) geom <- geom_histogram_module
+      else if (input$plot_type == CONST_LINE) geom <- geom_line_module
+      else if (input$plot_type == CONST_BOXPLOT) geom <- geom_boxplot_module
+      else geom <- NULL
+      validate(need(!is.null(geom), "WARNING: invalid plot object"))
+
+      p <- geom$plot()
+      if (!is.null(geom$facets))
+        p <- p %>% add_facet_grid(geom$facets)
       p <- p %>%
-        add_facet_grid(input) %>%
-        # add_guides(input) %>%
-        add_labs(input) %>%
+        add_guides(labels) %>%
+        add_labs(labels) %>%
+        add_ggtitle(labels) %>%
         add_theme(input)
       p
     })
@@ -102,27 +86,26 @@ gogoplot_server <- function(.data, data_name) {
       paste0(plot_code(), collapse = " +\n  ")
     })
 
-    # ---- data_table ----
-    output$data_table <- shiny::renderDataTable({
-      .data
-    }, options = list(pageLength = 5))
-    output$data_table_header <- shiny::renderText({
-      header <- shiny::tags$h3(sprintf("%s: %i x %i", data_name,
-                                       nrow(.data), ncol(.data)))
-      header <- paste(header)
-      header
-    })
-
     # ---- update button ----
     shiny::observeEvent(input$btn_update, {
-      updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
+      # shinyjs::disable("btn_update")
+      updateActionButton(session, "btn_update", label = "update plot")
+    })
+    # disable update if auto_plot turned on
+    shiny::observeEvent(input$auto_plot, {
+      if (input$auto_plot == T) {
+        shinyjs::disable("btn_update")
+        updateActionButton(session, "btn_update", label = "update plot")
+      }
     })
     # indicate if plot is stale
     shiny::observeEvent(plot(), {
       if (input$auto_plot == T) {
-        updateCheckboxInput(session, 'auto_plot', label = 'auto-update')
+        shinyjs::disable("btn_update")
+        updateActionButton(session, "btn_update", label = "update plot")
       } else {
-        updateCheckboxInput(session, 'auto_plot', label = 'auto-update (*)')
+        shinyjs::enable("btn_update")
+        updateActionButton(session, "btn_update", label = "update plot *")
       }
     })
 
@@ -146,3 +129,4 @@ gogoplot_server <- function(.data, data_name) {
 
   }
 }
+
