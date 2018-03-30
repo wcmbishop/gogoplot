@@ -4,9 +4,9 @@ output: github_document
 
 # gogoplot
 
-`gogoplot` provides a simple GUI for building a [`ggplot`](http://ggplot2.tidyverse.org) data visualization (using a [`shiny` HTML gadget](https://shiny.rstudio.com/articles/gadgets.html)). A data viz GUI is not a new thing. But the feature that `gogoplot` strives to achieve is the ability to generate and return the code used to make that plot. This makes `gogoplot` an educational tool and a way to make your visualizations reproducible. 
+`gogoplot` provides a simple GUI for building a [`ggplot`](http://ggplot2.tidyverse.org) data visualization (using a [`shiny` HTML gadget](https://shiny.rstudio.com/articles/gadgets.html)). A data viz GUI is nothing new thing. What `gogoplot` aims to do is to dynamically build and return the _code_ used to make a visualization, which makes it reproducible. This is also meant as an education tool to help introduce folks to some of the core functionality, syntax, and concepts of `ggplot2`. 
 
-This package is a work in progress. I would love help improving it! Check out the "*Contribute*" section if you're interested.
+This package is a work in progress. I would love help improving it! Check out the "**Contribute**" section if you're interested.
 
 <br>
 
@@ -22,16 +22,17 @@ devtools::install_github("wcmbishop/gogoplot", force = TRUE)
 
 ## Example
 
-The current version of `gogoplot` has just one function - `gogoplot()`. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can get to plotting! At the end, return the plot you made or the code needed to make it yourself.
+The current version of `gogoplot` has just one function - `gogoplot()`. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can interactively build up a visualization. At any point you can show the `ggplot2` code that is being generated, and when you're finished you can return that code. If you're using RStudio, the generated plot code is automatically inserted wherever your cursor is located.
 
 ```{r example, eval=FALSE}
+library(ggplot2)
 library(gogoplot)
 gogoplot(mtcars)
 ```
 ![](images/gogoplot.png)
 
 ### RStudio Addin
-The package also installs a handy **RStudio IDE add-in**, available in the "Addins" drop-down. To use this, highlight a data-frame object in your code and select the the `gogoplot` add-in to run the gadget. 
+The package also installs a handy **RStudio IDE add-in**, available in the "Addins" drop-down. To use this, highlight a data-frame object in your code and select the `gogoplot` add-in to run the gadget. 
 
 <br>
 

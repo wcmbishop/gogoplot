@@ -54,5 +54,5 @@ test_that("facet labeller", {
 test_that("missing input", {
   input <- default_input
   input$facet_row <- NULL
-  expect_error(add_geom_point(p_blank, input), "fields are missing")
+  expect_error(add_facet_grid(p_blank, input), "fields are missing")
 })

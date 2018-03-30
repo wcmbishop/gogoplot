@@ -17,7 +17,7 @@
   p <- e1 + rlang::eval_tidy(quo_layer)
   # add code string to "gogoplot" attribute
   attr(p, "gogoplot") <- c(attr(p, "gogoplot"),
-                           rlang::quo_name(quo_layer))
+                           rlang::quo_text(quo_layer, width = 200L))
   p
 }
 
@@ -25,6 +25,6 @@
 new_gogoplot <- function(new_layer) {
   quo_layer <- rlang::enquo(new_layer)
   p <- rlang::eval_tidy(quo_layer)
-  attr(p, "gogoplot") <- rlang::quo_name(quo_layer)
+  attr(p, "gogoplot") <- rlang::quo_text(quo_layer, width = 200L)
   p
 }
