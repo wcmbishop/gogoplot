@@ -2,7 +2,9 @@
 
 #' @title Interactively build a plot.
 #' @description Launch an interactive shiny gadget that lets you
-#' build a \pkg{ggplot2} plot from the given data.
+#' build a \pkg{ggplot2} plot from the given data. This function is also
+#' callable using an RStudio Addin -- you can high-light a data-frame
+#' object and select the "gogoplot" addin.
 #'
 #' @param .data  a data-frame to visualize
 #' @param popup  logical value to display the UI as a pop-up window.
@@ -14,22 +16,22 @@
 #' @return When using RStudio, the generated plot code is inserted at your
 #' cursor using the \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}}
 #' function. Outside of RStudio, the code is printed as a message.
-#' Plot code is also invisibly returned as a string, if you want to capture
-#' the return object.
+#' Plot code is also invisibly returned as a string, if you want
+#' to capture the return object.
 #'
 #' @examples
 #' \dontrun{
+#' library(ggplot2)
 #' library(gogoplot)
 #' gogoplot(mtcars)
 #' }
 #'
-#' @import ggplot2 shiny rlang
 #' @export
 gogoplot <- function(.data, popup = FALSE, width = 900, height = 800) {
   if (!inherits(.data, "data.frame"))
     stop(".data must be a data-frame.")
 
-  # # capture name of passed .data object
+  # capture name of passed .data object
   data_name <- deparse(substitute(.data))
 
   ui <- gogoplot_ui(data_name)
@@ -41,6 +43,7 @@ gogoplot <- function(.data, popup = FALSE, width = 900, height = 800) {
   } else {
     viewer = shiny::paneViewer(minHeight = 800)
   }
+
   shiny::runGadget(app = ui,
                    server = server,
                    viewer = viewer,

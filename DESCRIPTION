@@ -1,12 +1,11 @@
 Package: gogoplot
 Type: Package
 Title: Interactive ggplot2 gadgets
-Version: 0.1.2.9999
-Date: 2017-10-20
+Version: 0.2.0
+Date: 2018-03-29
 Authors@R: person("Will", "Bishop", email = "wbishop@tesla.com", 
   role = c("cre", "aut"))
-Description: Simple HTML gadgets for interactively building data visualziations
-    with ggplot. You can then return the plot or the code that built it.
+Description: A simple HTML gadget for interactively building ggplot2 plots (and plot code).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -16,9 +15,10 @@ Imports:
   ggplot2 (>= 2.2.1),
   magrittr (>= 1.5),
   miniUI (>= 0.1.1),
-  rlang (>= 0.1.2),
+  rlang (>= 0.2.0),
   rstudioapi (>= 0.6.0),
   shiny (>= 1.0.5),
+  shinyjs (>= 0.9.1),
   shinyWidgets (>= 0.3.6),
   tibble (>= 1.3.4)
 RoxygenNote: 6.0.1
