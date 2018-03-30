@@ -2,14 +2,22 @@
 LabelsInput <- function(id) {
   ns <- NS(id)
   tagList(
+
     # title
-    tags$h4("Plot Title"),
-    shiny::textInput(ns("title"), "title:"),
-    shiny::textInput(ns("subtitle"), "subtitle:"),
-    tags$hr(),
+    tags$h5("Plot Title"),
+    shiny::splitLayout(
+      cellWidths = c("15%", "85%"),
+      shiny::helpText("title:"),
+      shiny::textInput(ns("title"), label = NULL)
+    ),
+    shiny::splitLayout(
+      cellWidths = c("15%", "85%"),
+      shiny::helpText("subtitle:"),
+      shiny::textInput(ns("subtitle"), label = NULL)
+    ),
 
     # axes
-    tags$h4("Axes Labels"),
+    tags$h5("Axes Labels"),
     shiny::splitLayout(
       cellWidths = c("15%", "85%"),
       shiny::helpText("x-axis:"),
@@ -20,10 +28,9 @@ LabelsInput <- function(id) {
       shiny::helpText("y-axis:"),
       shiny::textInput(ns("label_y"), label = NULL)
     ),
-    tags$hr(),
 
     # legend
-    tags$h4("Legend Labels"),
+    tags$h5("Legend Label"),
     shiny::splitLayout(
       cellWidths = c("15%", "70%", "15%"),
       shiny::helpText("color:"),

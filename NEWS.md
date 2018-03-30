@@ -1,3 +1,15 @@
+## gogoplot 0.2.0
+Front-end changes: 
+* new plot types (geoms) added: geom_line and geom_boxplot
+* added input for labels (for plot title, axes labels, legend labels)
+* added input for plot "theme"
+
+Back-end changes: Large refactor to use shiny "modules" to make the UI and code more maneagable.
+* different geom types are driven by modules
+* common UI elements (like geom configuration inputs) are driven by modules
+
+
+-------------
 ## gogoplot 0.1.2
 
 * UI has been updated to focus solely on creating plots and returning plot code

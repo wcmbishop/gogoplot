@@ -60,21 +60,22 @@
 <div id="gogoplot" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#gogoplot" class="anchor"></a>gogoplot</h1></div>
-<p><code>gogoplot</code> provides a simple GUI for building a <a href="http://ggplot2.tidyverse.org"><code>ggplot</code></a> data visualization (using a <a href="https://shiny.rstudio.com/articles/gadgets.html"><code>shiny</code> HTML gadget</a>). A data viz GUI is not a new thing. But the feature that <code>gogoplot</code> strives to achieve is the ability to generate and return the code used to make that plot. This makes <code>gogoplot</code> an educational tool and a way to make your visualizations reproducible.</p>
-<p>This package is a work in progress. I would love help improving it! Check out the “<em>Contribute</em>” section if you’re interested.</p>
+<p><code>gogoplot</code> provides a simple GUI for building a <a href="http://ggplot2.tidyverse.org"><code>ggplot</code></a> data visualization (using a <a href="https://shiny.rstudio.com/articles/gadgets.html"><code>shiny</code> HTML gadget</a>). A data viz GUI is nothing new thing. What <code>gogoplot</code> aims to do is to dynamically build and return the <em>code</em> used to make a visualization, which makes it reproducible. This is also meant as an education tool to help introduce folks to some of the core functionality, syntax, and concepts of <code>ggplot2</code>.</p>
+<p>This package is a work in progress. I would love help improving it! Check out the “<strong>Contribute</strong>” section if you’re interested.</p>
 <p><br></p>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
-<p>You can install <code>gogoplot</code> by running the command below in R. To permanently add the Tesla CRAN repository to your computer, follow instructions <a href="https://cran.teslamotors.com/">here</a>.</p>
-<pre><code>install.packages("gogoplot", repos = c("https://cran.teslamotors.com", "https://cran.rstudio.com"))</code></pre>
+<p>You can install the latest dev version of <code>gogoplot</code> directly from BitBucket by running the code below:</p>
+<pre><code><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">devtools::install_git(url = "https://stash.teslamotors.com/scm/fsm/gogoplot.git", branch = 'develop')</a></code></pre>
 <p><br></p>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>The current version of <code>gogoplot</code> has just one function - <code><a href="reference/gogoplot.html">gogoplot()</a></code>. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can get to plotting! At the end, return the plot you made or the code needed to make it yourself.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(gogoplot)
+<p>The current version of <code>gogoplot</code> has just one function - <code><a href="reference/gogoplot.html">gogoplot()</a></code>. When you pass in a data-frame, a gadget UI will appear (either in your RStudio Viewer pane or in a pop-up window). From there, you can interactively build up a visualization. At any point you can show the <code>ggplot2</code> code that is being generated, and when you’re finished you can return that code. If you’re using RStudio, the generated plot code is automatically inserted wherever your cursor is located.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(gogoplot)
 <span class="kw"><a href="reference/gogoplot.html">gogoplot</a></span>(mtcars)</code></pre></div>
 <div class="figure">
 <img src="images/gogoplot.png">
@@ -82,7 +83,7 @@
 <div id="rstudio-addin" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rstudio-addin" class="anchor"></a>RStudio Addin</h3>
-<p>The package also installs a handy <strong>RStudio IDE add-in</strong>, available in the “Addins” drop-down. To use this, highlight a data-frame object in your code and select the the <code>gogoplot</code> add-in to run the gadget.</p>
+<p>The package also installs a handy <strong>RStudio IDE add-in</strong>, available in the “Addins” drop-down. To use this, highlight a data-frame object in your code and select the <code>gogoplot</code> add-in to run the gadget.</p>
 <p><br></p>
 </div>
 </div>

@@ -30,8 +30,9 @@ gogoplot_server <- function(.data, data_name) {
     geom_boxplot_module <- callModule(GeomBoxplot, "geom_boxplot",
                                       var_choices = var_choices,
                                       data_name = data_name)
-    # labels module
+    # high-level input modules
     labels <- callModule(Labels, "labels")
+    theme <- callModule(Theme, "theme")
 
     # ---- plot_display ----
     output$plot_display <- shiny::renderPlot({
@@ -63,7 +64,7 @@ gogoplot_server <- function(.data, data_name) {
         add_guides(labels) %>%
         add_labs(labels) %>%
         add_ggtitle(labels) %>%
-        add_theme(input)
+        add_theme(theme)
       p
     })
 
