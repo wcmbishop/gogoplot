@@ -1,18 +1,21 @@
-add_labs <- function(p, input) {
+add_labs <- function(p, labels) {
   # validate inputs
-  req_inputs <- c("color_mapping_enabled", "color_map")
-  if (!all(req_inputs %in% names(input)))
-    stop("some required input fields are missing")
+  # req_inputs <- c("color", "fill", "size")
+  # if (!all(req_inputs %in% names(labels)))
+  #   stop("some required labels fields are missing")
 
   setting <- rlang::exprs()
 
-  if (input$plot_type == CONST_POINT) {
-    if (input$color_mapping_enabled == TRUE && input$color_map != CONST_NONE)
-      setting <- append_exprs(setting, color = !!input$color_map)
-  } else if (input$plot_type == CONST_HISTOGRAM) {
-    if (input$color_mapping_enabled == TRUE && input$color_map != CONST_NONE)
-      setting <- append_exprs(setting, fill = !!input$color_map)
-  }
+  if (labels$label_x != "")
+    setting <- append_exprs(setting, x = !!labels$label_x)
+  if (labels$label_y != "")
+    setting <- append_exprs(setting, y = !!labels$label_y)
+  if (labels$label_color != "" && labels$hide_legend_color == FALSE)
+    setting <- append_exprs(setting, color = !!labels$label_color)
+  if (labels$label_fill != "" && labels$hide_legend_fill == FALSE)
+    setting <- append_exprs(setting, fill = !!labels$label_fill)
+  if (labels$label_size != "" && labels$hide_legend_size == FALSE)
+    setting <- append_exprs(setting, size = !!labels$label_size)
 
   # compile expressions into layer
   if (length(setting) > 0)

@@ -1,13 +1,18 @@
 context("add_geom_histogram")
 
 p_blank <- new_gogoplot(ggplot(mtcars, aes(disp)))
-default_input <- list(color_map = CONST_NONE, color_set = CONST_NONE,
-                      color_discrete = FALSE, color_mapping_enabled = FALSE,
-                      alpha = 1, bins = 30, binwidth = NA_real_)
+default_fields <- list()
+default_fill <- list(fill_map = CONST_NONE, fill_set = CONST_NONE,
+                     fill_discrete = FALSE, fill_mapping_enabled = FALSE,
+                     alpha = 1)
+default_bins <- list(bins = CONST_DEFAULT_BINS, binwidth = NA_real_)
+
 
 test_that("default settings", {
-  input <- default_input
-  p <- add_geom_histogram(p_blank, input)
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_is(p, "ggplot")
   expect_equal(length(code), 2)
@@ -17,56 +22,68 @@ test_that("default settings", {
 # ---- alpha ----
 
 test_that("set alpha", {
-  input <- default_input
-  input$alpha <- 0.5
-  p <- add_geom_histogram(p_blank, input)
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  fill$alpha <- 0.5
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(alpha = 0.5)")
 })
 
-# ---- color ----
+# ---- fill ----
 
-test_that("map color continuous", {
-  input <- default_input
-  input$color_mapping_enabled <- TRUE
-  input$color_map <- "cyl"
-  p <- add_geom_histogram(p_blank, input)
+test_that("map fill continuous", {
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  fill$fill_mapping_enabled <- TRUE
+  fill$fill_map <- "cyl"
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(aes(fill = cyl))")
 })
 
-test_that("map color discrete", {
-  input <- default_input
-  input$color_mapping_enabled <- TRUE
-  input$color_map <- "cyl"
-  input$color_discrete <- TRUE
-  p <- add_geom_histogram(p_blank, input)
+test_that("map fill discrete", {
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  fill$fill_mapping_enabled <- TRUE
+  fill$fill_map <- "cyl"
+  fill$fill_discrete <- TRUE
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(aes(fill = as.factor(cyl)))")
 })
 
-test_that("set color", {
-  input <- default_input
-  input$color_set <- "blue"
-  p <- add_geom_histogram(p_blank, input)
+test_that("set fill", {
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  fill$fill_set <- "blue"
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(fill = \"blue\")")
 })
 
-# ---- size ----
+# ---- bins ----
 
 test_that("set bins", {
-  input <- default_input
-  input$bins = 40
-  p <- add_geom_histogram(p_blank, input)
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  bins$bins = 40
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(bins = 40)")
 })
 
 test_that("set binwidth", {
-  input <- default_input
-  input$binwidth = 10
-  p <- add_geom_histogram(p_blank, input)
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  bins$binwidth = 10
+  p <- add_geom_histogram(p_blank, fields, fill, bins)
   code <- get_plot_code(p)
   expect_equal(code[2], "geom_histogram(binwidth = 10)")
 })
@@ -74,8 +91,11 @@ test_that("set binwidth", {
 # ---- bade inputs ----
 
 test_that("missing input field", {
-  input <- default_input
-  input$color_map <- NULL
-  expect_error(add_geom_histogram(p_blank, input), "fields are missing")
+  fields <- default_fields
+  fill <- default_fill
+  bins <- default_bins
+  fill$fill_map <- NULL
+  expect_error(add_geom_histogram(p_blank, fields, fill, bins),
+               "fields are missing")
 })
 

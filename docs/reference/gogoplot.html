@@ -83,7 +83,9 @@
 
     
     <p>Launch an interactive shiny gadget that lets you
-build a <span class="pkg">ggplot2</span> plot from the given data.</p>
+build a <span class="pkg">ggplot2</span> plot from the given data. This function is also
+callable using an RStudio Addin -- you can high-light a data-frame
+object and select the "gogoplot" addin.</p>
     
 
     <pre class="usage"><span class='fu'>gogoplot</span>(<span class='no'>.data</span>, <span class='kw'>popup</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>900</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>800</span>)</pre>
@@ -114,14 +116,15 @@ the Viewer pane.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>When using RStudio, the generated plot code is inserted at your
-cursor using the <span class="pkg">rstudioapi</span> <code><a href='http://www.rdocumentation.org/packages/rstudioapi/topics/document-mutation'>insertText</a></code>
+cursor using the <span class="pkg">rstudioapi</span> <code><a href='http://www.rdocumentation.org/packages/rstudioapi/topics/rstudio-documents'>insertText</a></code>
 function. Outside of RStudio, the code is printed as a message.
-Plot code is also invisibly returned as a string, if you want to capture
-the return object.</p>
+Plot code is also invisibly returned as a string, if you want
+to capture the return object.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>library</span>(<span class='no'>ggplot2</span>)
 <span class='fu'>library</span>(<span class='no'>gogoplot</span>)
 <span class='fu'>gogoplot</span>(<span class='no'>mtcars</span>)
 <span class='co'># }</span><div class='input'>

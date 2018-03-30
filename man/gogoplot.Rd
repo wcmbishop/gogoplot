@@ -21,15 +21,18 @@ the Viewer pane.}
 When using RStudio, the generated plot code is inserted at your
 cursor using the \pkg{rstudioapi} \code{\link[rstudioapi]{insertText}}
 function. Outside of RStudio, the code is printed as a message.
-Plot code is also invisibly returned as a string, if you want to capture
-the return object.
+Plot code is also invisibly returned as a string, if you want
+to capture the return object.
 }
 \description{
 Launch an interactive shiny gadget that lets you
-build a \pkg{ggplot2} plot from the given data.
+build a \pkg{ggplot2} plot from the given data. This function is also
+callable using an RStudio Addin -- you can high-light a data-frame
+object and select the "gogoplot" addin.
 }
 \examples{
 \dontrun{
+library(ggplot2)
 library(gogoplot)
 gogoplot(mtcars)
 }
