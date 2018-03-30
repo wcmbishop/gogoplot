@@ -29,7 +29,8 @@ library(ggplot2)
 library(gogoplot)
 gogoplot(mtcars)
 ```
-![](images/gogoplot.png)
+
+![](man/figures/gogoplot.gif)
 
 ### RStudio Addin
 The package also installs a handy **RStudio IDE add-in**, available in the "Addins" drop-down. To use this, highlight a data-frame object in your code and select the `gogoplot` add-in to run the gadget. 

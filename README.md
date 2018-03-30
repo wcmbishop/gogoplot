@@ -31,7 +31,7 @@ library(gogoplot)
 gogoplot(mtcars)
 ```
 
-![](images/gogoplot.png)
+![](man/figures/gogoplot.gif)
 
 ### RStudio Addin
 
